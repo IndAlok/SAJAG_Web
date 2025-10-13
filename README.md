@@ -32,7 +32,6 @@
 - [🔐 Authentication & Access Control](#-authentication--access-control)
 - [📊 Data Model](#-data-model)
 - [🎯 Demo Credentials](#-demo-credentials)
-- [📸 Screenshots](#-screenshots)
 - [🌐 Deployment](#-deployment)
 - [👥 Team & Contribution](#-team--contribution)
 - [📄 License](#-license)
@@ -1116,7 +1115,7 @@ VITE_ANALYTICS_ID=your_analytics_id
 
 ### Smart India Hackathon 2025
 
-**Team Name**: BitBenders 
+**Team Name**: BitBenders  
 **Problem Statement ID**: 25258  
 **Theme**: Disaster Management  
 **Organization**: National Disaster Management Authority (NDMA)
@@ -1207,21 +1206,6 @@ SOFTWARE.
 
 ---
 
-## 📞 Contact & Support
-
-### For Smart India Hackathon 2025
-
-**Team Contact**: [your-email@example.com]  
-**GitHub Repository**: [https://github.com/IndAlok/SAJAG_Web](https://github.com/IndAlok/SAJAG_Web)  
-**Demo URL**: [Coming Soon]
-
-### Project Links
-
-- 🌐 **Live Demo**: [Deploy after hackathon]
-- 📹 **Video Demo**: [YouTube link]
-- 📊 **Presentation**: [Google Drive/PPT link]
-- 📝 **Documentation**: [Detailed docs]
-
 ### Technical Support
 
 For technical queries:
@@ -1232,13 +1216,6 @@ For technical queries:
    - Steps to reproduce
    - Expected vs actual behavior
    - Screenshots if applicable
-
-### Hackathon Judges
-
-**For evaluation purposes**, please refer to:
-- [🎯 Demo Credentials](#-demo-credentials) - Test different user roles
-- [🏆 Unique Selling Points](#-unique-selling-points) - Key innovations
-- [✨ Core Features](#-core-features) - Complete feature list
 
 ---
 
