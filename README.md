@@ -12,7 +12,7 @@
 
 **_Empowering Disaster Preparedness Through Intelligent Training Management_**
 
-[🚀 Quick Start](#-installation--setup) • [✨ Features](#-core-features) • [🎯 Demo](#-demo-credentials) • [📖 Documentation](#-documentation)
+[🚀 Quick Start](#-installation--setup) • [✨ Features](#-core-features) • [🎯 Demo](#-demo-credentials)
 
 </div>
 
