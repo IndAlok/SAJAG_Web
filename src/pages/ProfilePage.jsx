@@ -1,4 +1,5 @@
-import { Box, Typography, Paper, Grid, Avatar, Chip, Divider, List, ListItem, ListItemText } from '@mui/material';
+import { Box, Typography, Paper, Avatar, Chip, Divider, List, ListItem, ListItemText } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { Email, Badge, LocationOn, CalendarToday, Shield } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';

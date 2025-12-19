@@ -5,7 +5,6 @@ import {
   Typography,
   Button,
   TextField,
-  Grid,
   Chip,
   InputAdornment,
   Dialog,
@@ -19,6 +18,7 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import {
   Add,
   Search,

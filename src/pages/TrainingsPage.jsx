@@ -6,11 +6,11 @@ import {
   Button,
   TextField,
   MenuItem,
-  Grid,
   Chip,
   InputAdornment,
   CircularProgress,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import {
   Add,
   Search,

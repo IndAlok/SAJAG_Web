@@ -6,7 +6,6 @@ import {
   DialogActions,
   Button,
   TextField,
-  Grid,
   MenuItem,
   Stepper,
   Step,
@@ -14,6 +13,7 @@ import {
   Box,
   CircularProgress,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { useDispatch, useSelector } from 'react-redux';
 import { createTraining, updateTrainingById, selectTrainingsLoading, selectSelectedTraining } from './trainingsSlice';
 import { fetchPartners, selectAllPartners } from '../partners/partnersSlice';
