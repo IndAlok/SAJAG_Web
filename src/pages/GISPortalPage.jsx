@@ -20,8 +20,10 @@ const GISPortalPage = () => {
   const centerPosition = [20.5937, 78.9629];
   const themes = [...new Set(trainings.map(t => t.theme))];
 
-  // Filter trainings based on selected filters
+  // Filter trainings based on selected filters AND valid location
   const filteredMapData = trainings.filter(t => {
+    // Skip trainings without valid location data
+    if (!t.location || t.location.lat === null || t.location.lon === null) return false;
     if (filterTheme !== 'all' && t.theme !== filterTheme) return false;
     if (filterStatus !== 'all' && t.status !== filterStatus) return false;
     return true;

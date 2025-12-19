@@ -34,7 +34,9 @@ const TrainingsHeatmap = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             
-            {trainings.map((training) => (
+            {trainings
+              .filter(training => training.location && training.location.lat !== null && training.location.lon !== null)
+              .map((training) => (
               <CircleMarker
                 key={training.id}
                 center={[training.location.lat, training.location.lon]}
