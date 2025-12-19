@@ -1,4 +1,4 @@
-import { Box, Typography, GridLegacy as Grid } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
 import MainLayout from '../components/layout/MainLayout';
 import Breadcrumbs from '../components/common/Breadcrumbs';

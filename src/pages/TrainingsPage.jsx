@@ -9,7 +9,7 @@ import {
   Chip,
   InputAdornment,
   CircularProgress,
-  GridLegacy as Grid,
+  Grid,
 } from '@mui/material';
 import {
   Add,
