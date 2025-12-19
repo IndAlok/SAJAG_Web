@@ -92,31 +92,21 @@ const LoginScreen = () => {
     }
   };
 
-  const handleDemoLogin = async () => {
-    try {
-      const result = await dispatch(loginUser({ 
-        email: 'admin@ndma.gov.in', 
-        password: 'admin123' 
-      })).unwrap();
-      console.log('[Demo Login] Backend login success:', result);
-      navigate('/dashboard');
-    } catch (err) {
-      console.warn('[Demo Login] Backend failed, using local demo mode:', err);
-      // Fallback: Create a demo session locally (for demo purposes only)
-      const demoUser = {
-        id: 'demo-admin',
-        name: 'NDMA Admin (Demo)',
-        email: 'admin@ndma.gov.in',
-        organization: 'National Disaster Management Authority',
-        role: 'Admin',
-      };
-      const demoToken = 'demo-token-' + Date.now();
-      localStorage.setItem('sajag_token', demoToken);
-      localStorage.setItem('sajag_user', JSON.stringify(demoUser));
-      localStorage.setItem('sajag_provider', 'demo');
-      dispatch(setFirebaseUser({ user: demoUser, token: demoToken, provider: 'demo' }));
-      navigate('/dashboard');
-    }
+  const handleDemoLogin = () => {
+    // Instant demo login - no backend call needed
+    const demoUser = {
+      id: 'demo-admin',
+      name: 'NDMA Admin',
+      email: 'admin@ndma.gov.in',
+      organization: 'National Disaster Management Authority',
+      role: 'Admin',
+    };
+    const demoToken = 'demo-session-' + Date.now();
+    localStorage.setItem('sajag_token', demoToken);
+    localStorage.setItem('sajag_user', JSON.stringify(demoUser));
+    localStorage.setItem('sajag_provider', 'demo');
+    dispatch(setFirebaseUser({ user: demoUser, token: demoToken, provider: 'demo' }));
+    navigate('/dashboard');
   };
 
   return (
