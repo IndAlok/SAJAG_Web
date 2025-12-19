@@ -239,8 +239,11 @@ npm run db:seed
 | GET | /api/partners | List partners |
 | POST | /api/partners | Create partner |
 | GET | /api/analytics/stats | Dashboard statistics |
-| GET | /api/analytics/thematic | Theme distribution |
-| GET | /api/analytics/geographic | State distribution |
+| GET | /api/analytics/thematic-coverage | Theme distribution |
+| GET | /api/analytics/geographic-spread | State distribution |
+| GET | /api/analytics/partner-leaderboard | Partner rankings |
+| GET | /api/analytics/status-distribution | Status breakdown |
+| GET | /api/health | Health check |
 
 ---
 
@@ -263,4 +266,4 @@ MIT License
 
 ---
 
-Developed with ❤️ by [IndAlok](https://github.com/IndAlok)
+Developed for Smart India Hackathon 2025 - Problem Statement SIH-1643
