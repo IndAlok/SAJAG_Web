@@ -13,7 +13,7 @@ const getStoredLanguage = () => {
 const initialState = {
   themeMode: getStoredTheme(), // 'light', 'dark', or 'high-contrast'
   language: getStoredLanguage(), // 'en' or 'hi'
-  sidebarOpen: true,
+  sidebarOpen: false, // Default closed for cleaner initial layout
   loading: false,
 };
 
