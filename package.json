@@ -2,21 +2,12 @@
   "name": "sajag",
   "version": "2.0.0",
   "private": true,
-  "description": "SAJAG - Smart Advanced Jaagruk Governance Platform for NDMA Disaster Management Training",
+  "description": "SAJAG - NDMA Disaster Management Training Platform",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:frontend": "vite",
-    "dev:backend": "cd SAJAG_Backend && npm run dev",
+    "dev": "vite",
     "build": "vite build",
-    "vercel-build": "vite build && cd SAJAG_Backend && npm install",
     "preview": "vite preview",
-    "start": "npm run dev",
-    "backend:install": "cd SAJAG_Backend && npm install",
-    "backend:db:push": "cd SAJAG_Backend && npx prisma db push",
-    "backend:db:seed": "cd SAJAG_Backend && npm run db:seed",
-    "backend:start": "cd SAJAG_Backend && npm start",
-    "setup": "npm install && npm run backend:install && npm run backend:db:push && npm run backend:db:seed",
     "lint": "eslint ."
   },
   "dependencies": {
@@ -40,41 +31,20 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.4",
     "recharts": "^3.2.1",
-    "remark-gfm": "^4.0.1",
-    "@prisma/client": "^5.7.1",
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-validator": "^7.0.1",
-    "jsonwebtoken": "^9.0.2"
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
-    "concurrently": "^9.1.2",
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
-    "vite": "^7.1.7",
-    "prisma": "^5.7.1"
+    "vite": "^7.1.7"
   },
   "engines": {
     "node": ">=18.0.0"
-  },
-  "keywords": [
-    "disaster-management",
-    "ndma",
-    "training-platform",
-    "react",
-    "nodejs",
-    "prisma",
-    "postgresql",
-    "sih2025"
-  ],
-  "author": "IndAlok",
-  "license": "MIT"
+  }
 }
