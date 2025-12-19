@@ -11,26 +11,16 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Validation rules
-const createPartnerValidation = [
+const partnerValidation = [
   body('name').trim().notEmpty().withMessage('Partner name is required'),
-  body('type')
-    .isIn(['NIDM', 'ATI', 'NGO', 'GoI Ministry'])
-    .withMessage('Invalid partner type'),
+  body('type').trim().notEmpty().withMessage('Partner type is required'),
 ];
 
-// All routes are protected
-router.use(protect);
+router.get('/', getPartners);
+router.get('/:id', getPartner);
 
-router
-  .route('/')
-  .post(createPartnerValidation, createPartner)
-  .get(getPartners);
-
-router
-  .route('/:id')
-  .get(getPartner)
-  .put(updatePartner)
-  .delete(deletePartner);
+router.post('/', protect, partnerValidation, createPartner);
+router.put('/:id', protect, updatePartner);
+router.delete('/:id', protect, deletePartner);
 
 module.exports = router;

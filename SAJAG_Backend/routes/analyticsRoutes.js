@@ -6,12 +6,8 @@ const {
   getPartnerLeaderboard,
   getStatusDistribution,
 } = require('../controllers/analyticsController');
-const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
-
-// All routes are protected
-router.use(protect);
 
 router.get('/stats', getStats);
 router.get('/thematic-coverage', getThematicCoverage);

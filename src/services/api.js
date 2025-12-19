@@ -29,11 +29,7 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      
-      localStorage.removeItem('sajag_token');
-      localStorage.removeItem('sajag_user');
-      
-      window.location.href = '/';
+      console.warn('API returned 401 - authentication required for this endpoint');
       return Promise.reject(error);
     }
 
