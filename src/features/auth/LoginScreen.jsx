@@ -29,6 +29,7 @@ import {
   loginWithEmail, 
   signUpWithEmail,
   loginUser,
+  setFirebaseUser,
   selectAuthLoading,
   selectAuthError,
   clearError,
@@ -93,13 +94,28 @@ const LoginScreen = () => {
 
   const handleDemoLogin = async () => {
     try {
-      await dispatch(loginUser({ 
+      const result = await dispatch(loginUser({ 
         email: 'admin@ndma.gov.in', 
         password: 'admin123' 
       })).unwrap();
+      console.log('[Demo Login] Backend login success:', result);
       navigate('/dashboard');
     } catch (err) {
-      console.error('Demo login error:', err);
+      console.warn('[Demo Login] Backend failed, using local demo mode:', err);
+      // Fallback: Create a demo session locally (for demo purposes only)
+      const demoUser = {
+        id: 'demo-admin',
+        name: 'NDMA Admin (Demo)',
+        email: 'admin@ndma.gov.in',
+        organization: 'National Disaster Management Authority',
+        role: 'Admin',
+      };
+      const demoToken = 'demo-token-' + Date.now();
+      localStorage.setItem('sajag_token', demoToken);
+      localStorage.setItem('sajag_user', JSON.stringify(demoUser));
+      localStorage.setItem('sajag_provider', 'demo');
+      dispatch(setFirebaseUser({ user: demoUser, token: demoToken, provider: 'demo' }));
+      navigate('/dashboard');
     }
   };
 
