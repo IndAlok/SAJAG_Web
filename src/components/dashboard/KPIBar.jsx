@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { GridLegacy as Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { School, People, Business, LocationOn } from '@mui/icons-material';
 import StatCard from '../common/StatCard';

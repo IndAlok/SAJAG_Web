@@ -12,7 +12,7 @@ import {
   StepLabel,
   Box,
   CircularProgress,
-  Grid,
+  GridLegacy as Grid,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { createTraining, updateTrainingById, selectTrainingsLoading, selectSelectedTraining } from './trainingsSlice';

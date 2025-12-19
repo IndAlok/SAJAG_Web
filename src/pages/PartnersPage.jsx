@@ -17,7 +17,7 @@ import {
   Avatar,
   IconButton,
   Tooltip,
-  Grid,
+  GridLegacy as Grid,
 } from '@mui/material';
 import {
   Add,

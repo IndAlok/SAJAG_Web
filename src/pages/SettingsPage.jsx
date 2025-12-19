@@ -1,4 +1,4 @@
-import { Box, Typography, Paper, FormControl, FormLabel, RadioGroup, Radio, Switch, FormControlLabel, Divider, Button, Grid } from '@mui/material';
+import { Box, Typography, Paper, FormControl, FormLabel, RadioGroup, Radio, Switch, FormControlLabel, Divider, Button, GridLegacy as Grid } from '@mui/material';
 import { Settings as SettingsIcon, Brightness4, Brightness7, Contrast, Language, Save } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';

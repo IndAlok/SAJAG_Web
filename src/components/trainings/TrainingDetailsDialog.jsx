@@ -6,7 +6,7 @@ import {
   Button,
   Typography,
   Box,
-  Grid,
+  GridLegacy as Grid,
   Chip,
   Divider,
   List,

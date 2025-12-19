@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { Box, Typography, Card, CardContent, Paper, CircularProgress, Grid } from '@mui/material';
+import { Box, Typography, Card, CardContent, Paper, CircularProgress, GridLegacy as Grid } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { motion } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';

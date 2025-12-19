@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, CardContent, Typography, Box, Button, TextField, MenuItem, Paper, Chip, Grid } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button, TextField, MenuItem, Paper, Chip, GridLegacy as Grid } from '@mui/material';
 import { PictureAsPdf, Download } from '@mui/icons-material';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
