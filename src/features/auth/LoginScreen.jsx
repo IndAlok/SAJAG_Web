@@ -26,7 +26,7 @@ import {
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { login } from './authSlice';
-import { userRoles, indianStatesList } from '../../data/mockData';
+import { userRoles, indianStates as indianStatesList } from '../../data/constants';
 
 const LoginScreen = () => {
   const navigate = useNavigate();

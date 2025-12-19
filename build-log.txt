@@ -1,0 +1,120 @@
+﻿
+> sajag_web@0.0.0 build
+> vite build
+
+[36mvite v7.1.9 [32mbuilding for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 14262 modules transformed.
+node.exe : 
+[31mΓ£ù[39m Build 
+failed in 21.77s
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([31mΓ£ù[39m   
+  Build failed in 2    
+1.77s:String) [],     
+RemoteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+[31merror during 
+build:
+[31msrc/features/auth/
+LoginScreen.jsx 
+(28:9): "login" is not 
+exported by "src/featur
+es/auth/authSlice.js", 
+imported by "src/featur
+es/auth/LoginScreen.jsx
+".[31m
+file: [36mC:/Users/Adm
+in/Desktop/SAJAG_Web/sr
+c/features/auth/LoginSc
+reen.jsx:28:9[31m
+[33m
+26: } from 
+'@mui/icons-material';
+27: import { motion, 
+AnimatePresence } from 
+'framer-motion';
+28: import { login } 
+from './authSlice';
+             ^
+29: import { 
+userRoles, 
+indianStates as 
+indianStatesList } 
+from 
+'../../data/constants';
+[31m
+    at getRollupError (
+file:///C:/Users/Admin/
+Desktop/SAJAG_Web/node_
+modules/rollup/dist/es/
+shared/parseAst.js:401:
+41)
+    at error (file:///C
+:/Users/Admin/Desktop/S
+AJAG_Web/node_modules/r
+ollup/dist/es/shared/pa
+rseAst.js:397:42)
+    at Module.error (fi
+le:///C:/Users/Admin/De
+sktop/SAJAG_Web/node_mo
+dules/rollup/dist/es/sh
+ared/node-entry.js:1693
+9:16)
+    at 
+Module.traceVariable (f
+ile:///C:/Users/Admin/D
+esktop/SAJAG_Web/node_m
+odules/rollup/dist/es/s
+hared/node-entry.js:173
+91:29)
+    at ModuleScope.find
+Variable (file:///C:/Us
+ers/Admin/Desktop/SAJAG
+_Web/node_modules/rollu
+p/dist/es/shared/node-e
+ntry.js:15061:39)
+    at ReturnValueScope
+.findVariable (file:///
+C:/Users/Admin/Desktop/
+SAJAG_Web/node_modules/
+rollup/dist/es/shared/n
+ode-entry.js:5642:38)
+    at FunctionBodyScop
+e.findVariable (file://
+/C:/Users/Admin/Desktop
+/SAJAG_Web/node_modules
+/rollup/dist/es/shared/
+node-entry.js:5642:38)
+    at ReturnValueScope
+.findVariable (file:///
+C:/Users/Admin/Desktop/
+SAJAG_Web/node_modules/
+rollup/dist/es/shared/n
+ode-entry.js:5642:38)
+    at FunctionBodyScop
+e.findVariable (file://
+/C:/Users/Admin/Desktop
+/SAJAG_Web/node_modules
+/rollup/dist/es/shared/
+node-entry.js:5642:38)
+    at TrackingScope.fi
+ndVariable (file:///C:/
+Users/Admin/Desktop/SAJ
+AG_Web/node_modules/rol
+lup/dist/es/shared/node
+-entry.js:5642:38)[39m

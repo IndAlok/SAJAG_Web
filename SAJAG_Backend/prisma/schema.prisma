@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  password     String
+  organization String
+  role         String   @default("Official")
+  createdAt    DateTime @default(now())
+
+  programs TrainingProgram[]
+
+  @@map("users")
+}
+
+model TrainingPartner {
+  id                    String   @id @default(cuid())
+  name                  String   @unique
+  type                  String
+  contactPerson         String?
+  contactEmail          String?
+  contactPhone          String?
+  address               String?
+  totalProgramsConducted Int     @default(0)
+  createdAt             DateTime @default(now())
+
+  programs TrainingProgram[]
+
+  @@map("training_partners")
+}
+
+model TrainingProgram {
+  id            String   @id @default(cuid())
+  title         String
+  theme         String
+  status        String   @default("Planned")
+  state         String
+  district      String
+  startDate     DateTime
+  endDate       DateTime
+  latitude      Float?
+  longitude     Float?
+  address       String?
+  participants  Int      @default(0)
+  feedbackScore Float?
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  partnerId String?
+  partner   TrainingPartner? @relation(fields: [partnerId], references: [id])
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  @@map("training_programs")
+}

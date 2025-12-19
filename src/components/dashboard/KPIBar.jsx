@@ -2,12 +2,10 @@ import { Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { School, People, Business, LocationOn } from '@mui/icons-material';
 import StatCard from '../common/StatCard';
-import { getSummaryStats } from '../../data/mockData';
 import { selectFilteredTrainings } from '../../features/trainings/trainingsSlice';
 
 const KPIBar = () => {
   const filteredTrainings = useSelector(selectFilteredTrainings);
-  const stats = getSummaryStats();
 
   // Apply RBAC filtering to stats
   const totalTrainings = filteredTrainings.length;

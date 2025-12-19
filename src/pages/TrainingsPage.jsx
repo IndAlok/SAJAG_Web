@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Paper,
@@ -8,8 +8,8 @@ import {
   MenuItem,
   Grid,
   Chip,
-  IconButton,
   InputAdornment,
+  CircularProgress,
 } from '@mui/material';
 import {
   Add,
@@ -28,20 +28,30 @@ import BulkActionsToolbar from '../components/trainings/BulkActionsToolbar';
 import {
   selectFilteredTrainings,
   selectFilters,
+  selectTrainingsLoading,
   setFilters,
   resetFilters,
   setSelectedTraining,
+  fetchTrainings,
+  deleteTrainingById,
+  bulkDeleteTrainings,
+  bulkUpdateStatus,
 } from '../features/trainings/trainingsSlice';
 import { selectHasFullAccess } from '../features/auth/authSlice';
+import { fetchPartners, selectAllPartners } from '../features/partners/partnersSlice';
 import { formatDate, getStatusColor, downloadCSV } from '../utils/formatters';
-import { themes, partners } from '../data/mockData';
+import { themes, indianStates } from '../data/constants';
 import TrainingForm from '../features/trainings/TrainingForm';
+import { useToast } from '../components/common/ToastProvider';
 
 const TrainingsPage = () => {
   const dispatch = useDispatch();
+  const toast = useToast();
   const trainings = useSelector(selectFilteredTrainings);
   const filters = useSelector(selectFilters);
+  const loading = useSelector(selectTrainingsLoading);
   const hasFullAccess = useSelector(selectHasFullAccess);
+  const partners = useSelector(selectAllPartners);
   
   const [showFilters, setShowFilters] = useState(false);
   const [openForm, setOpenForm] = useState(false);
@@ -49,7 +59,11 @@ const TrainingsPage = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectionModel, setSelectionModel] = useState([]);
 
-  // Get unique states and districts
+  useEffect(() => {
+    dispatch(fetchTrainings());
+    dispatch(fetchPartners());
+  }, [dispatch]);
+
   const states = [...new Set(trainings.map(t => t.state))].sort();
   const districts = [...new Set(trainings.map(t => t.district))].sort();
 
@@ -125,6 +139,11 @@ const TrainingsPage = () => {
     dispatch(resetFilters());
   };
 
+  const handleRefresh = () => {
+    dispatch(fetchTrainings());
+    toast.info('Trainings refreshed');
+  };
+
   const handleExport = () => {
     const exportData = trainings.map(t => ({
       ID: t.id,
@@ -140,6 +159,7 @@ const TrainingsPage = () => {
       Partner: t.partnerName,
     }));
     downloadCSV(exportData, 'trainings_export.csv');
+    toast.success(`Exported ${exportData.length} trainings`);
   };
 
   const handleRowClick = (params) => {
@@ -152,22 +172,38 @@ const TrainingsPage = () => {
     setOpenForm(true);
   };
 
-  const handleDelete = (trainingId) => {
-    // In a real app, this would dispatch a delete action
-    console.log('Delete training:', trainingId);
-    alert(`Training ${trainingId} would be deleted (not implemented in demo)`);
+  const handleDelete = async (trainingId) => {
+    if (window.confirm('Are you sure you want to delete this training?')) {
+      try {
+        await dispatch(deleteTrainingById(trainingId)).unwrap();
+        toast.success('Training deleted successfully');
+        setDetailsOpen(false);
+      } catch (error) {
+        toast.error(error || 'Failed to delete training');
+      }
+    }
   };
 
-  const handleBulkDelete = () => {
-    console.log('Bulk delete:', selectionModel);
-    alert(`${selectionModel.length} trainings would be deleted (not implemented in demo)`);
-    setSelectionModel([]);
+  const handleBulkDelete = async () => {
+    if (window.confirm(`Are you sure you want to delete ${selectionModel.length} trainings?`)) {
+      try {
+        const result = await dispatch(bulkDeleteTrainings(selectionModel)).unwrap();
+        toast.success(`${result.succeeded} trainings deleted`);
+        setSelectionModel([]);
+      } catch (error) {
+        toast.error(error || 'Bulk delete failed');
+      }
+    }
   };
 
-  const handleBulkStatusUpdate = (newStatus) => {
-    console.log('Update status to:', newStatus, 'for:', selectionModel);
-    alert(`${selectionModel.length} trainings would be updated to ${newStatus} (not implemented in demo)`);
-    setSelectionModel([]);
+  const handleBulkStatusUpdate = async (newStatus) => {
+    try {
+      const result = await dispatch(bulkUpdateStatus({ ids: selectionModel, status: newStatus })).unwrap();
+      toast.success(`${result.succeeded} trainings updated to ${newStatus}`);
+      setSelectionModel([]);
+    } catch (error) {
+      toast.error(error || 'Status update failed');
+    }
   };
 
   const handleBulkExport = () => {
@@ -186,6 +222,7 @@ const TrainingsPage = () => {
       Partner: t.partnerName,
     }));
     downloadCSV(exportData, 'selected_trainings_export.csv');
+    toast.success(`Exported ${exportData.length} selected trainings`);
   };
 
   return (
@@ -250,8 +287,8 @@ const TrainingsPage = () => {
               >
                 Filters
               </Button>
-              <Button startIcon={<Refresh />} onClick={handleResetFilters}>
-                Reset
+              <Button startIcon={<Refresh />} onClick={handleRefresh} disabled={loading}>
+                {loading ? <CircularProgress size={20} /> : 'Refresh'}
               </Button>
               <Button startIcon={<Download />} onClick={handleExport}>
                 Export
@@ -331,6 +368,12 @@ const TrainingsPage = () => {
                   ))}
                 </TextField>
               </Grid>
+
+              <Grid size={{ xs: 12 }}>
+                <Button variant="text" onClick={handleResetFilters}>
+                  Clear All Filters
+                </Button>
+              </Grid>
             </Grid>
           )}
         </Paper>
@@ -350,13 +393,14 @@ const TrainingsPage = () => {
             <DataGrid
               rows={trainings}
               columns={columns}
+              loading={loading}
               pageSize={10}
               rowsPerPageOptions={[10, 25, 50, 100]}
               checkboxSelection={hasFullAccess}
               disableSelectionOnClick={false}
               onRowClick={handleRowClick}
-              selectionModel={selectionModel}
-              onSelectionModelChange={(newSelection) => {
+              rowSelectionModel={selectionModel}
+              onRowSelectionModelChange={(newSelection) => {
                 setSelectionModel(newSelection);
               }}
               sx={{

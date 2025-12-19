@@ -7,8 +7,46 @@ import {
   ThumbUp,
   HourglassEmpty,
 } from '@mui/icons-material';
-import { recentActivities } from '../../data/mockData';
 import { getRelativeTime } from '../../utils/formatters';
+
+const recentActivities = [
+  {
+    id: 1,
+    type: 'training_completed',
+    title: 'Training Completed',
+    description: 'Cyclone Management program successfully completed in Puri, Odisha',
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    icon: 'CheckCircle',
+    color: 'success',
+  },
+  {
+    id: 2,
+    type: 'training_added',
+    title: 'New Training Scheduled',
+    description: 'Fire Safety workshop added for Mumbai, Maharashtra',
+    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    icon: 'Add',
+    color: 'primary',
+  },
+  {
+    id: 3,
+    type: 'partner_joined',
+    title: 'Partner Onboarded',
+    description: 'New training partner registered on the platform',
+    timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+    icon: 'Group',
+    color: 'info',
+  },
+  {
+    id: 4,
+    type: 'training_inprogress',
+    title: 'Training in Progress',
+    description: 'Earthquake Preparedness drill ongoing in Shimla',
+    timestamp: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString(),
+    icon: 'Schedule',
+    color: 'warning',
+  },
+];
 
 const getIcon = (iconName) => {
   const icons = {
@@ -35,7 +73,7 @@ const RecentActivityTimeline = () => {
         </Typography>
 
         <List>
-          {recentActivities.slice(0, 6).map((activity, index) => (
+          {recentActivities.map((activity) => (
             <ListItem
               key={activity.id}
               sx={{

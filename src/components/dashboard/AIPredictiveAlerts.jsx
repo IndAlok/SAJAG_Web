@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, Box, Alert, Chip, Stack } from '@mui/material';
 import { Warning, TrendingUp, Insights, Info } from '@mui/icons-material';
 import { motion } from 'framer-motion';
-import { aiPredictiveAlerts } from '../../data/mockData';
+import { defaultAlerts as aiPredictiveAlerts } from '../../data/constants';
 
 const getIcon = (iconName) => {
   const icons = {

@@ -17,6 +17,7 @@ import {
   Map,
   Settings,
   Person,
+  Handshake,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -51,6 +52,11 @@ const Sidebar = () => {
       text: language === 'hi' ? 'जीआईएस पोर्टल' : 'GIS Portal',
       icon: <Map />,
       path: '/gis',
+    },
+    {
+      text: language === 'hi' ? 'भागीदार' : 'Partners',
+      icon: <Handshake />,
+      path: '/partners',
     },
     {
       text: language === 'hi' ? 'प्रोफ़ाइल' : 'Profile',

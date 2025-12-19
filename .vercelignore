@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+
+# Build output (not needed, Vercel builds it)
+dist
+
+# Development files
+.env
+.env.local
+*.local
+
+# Editor files
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Test coverage
+coverage
+
+# Documentation not needed in build
+*.md
+!README.md
+
+# Git
+.git
+.gitignore

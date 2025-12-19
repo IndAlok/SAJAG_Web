@@ -1,18 +1,81 @@
-import { Box, Grid, Typography, Card, CardContent, Paper } from '@mui/material';
+import { useEffect, useMemo } from 'react';
+import { Box, Grid, Typography, Card, CardContent, Paper, CircularProgress } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { motion } from 'framer-motion';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import MainLayout from '../components/layout/MainLayout';
 import Breadcrumbs from '../components/common/Breadcrumbs';
-import { selectFilteredTrainings } from '../features/trainings/trainingsSlice';
-import { getPartnerPerformance, getStateDistribution, getMonthlyTrends } from '../data/mockData';
+import { selectFilteredTrainings, fetchTrainings } from '../features/trainings/trainingsSlice';
+import { selectAllPartners, fetchPartners } from '../features/partners/partnersSlice';
 import DynamicReportBuilder from '../features/analytics/DynamicReportBuilder';
 
 const AnalyticsPage = () => {
+  const dispatch = useDispatch();
   const trainings = useSelector(selectFilteredTrainings);
-  const partnerPerformance = getPartnerPerformance();
-  const stateDistribution = getStateDistribution();
-  const monthlyTrends = getMonthlyTrends();
+  const partners = useSelector(selectAllPartners);
+
+  useEffect(() => {
+    if (trainings.length === 0) {
+      dispatch(fetchTrainings());
+    }
+    if (partners.length === 0) {
+      dispatch(fetchPartners());
+    }
+  }, [dispatch, trainings.length, partners.length]);
+
+  const partnerPerformance = useMemo(() => {
+    const perf = {};
+    trainings.forEach(t => {
+      if (!t.partnerId) return;
+      if (!perf[t.partnerId]) {
+        perf[t.partnerId] = {
+          id: t.partnerId,
+          name: t.partnerName || 'Unknown',
+          totalTrainings: 0,
+          totalParticipants: 0,
+        };
+      }
+      perf[t.partnerId].totalTrainings++;
+      perf[t.partnerId].totalParticipants += t.participants || 0;
+    });
+    return Object.values(perf).sort((a, b) => b.totalParticipants - a.totalParticipants);
+  }, [trainings]);
+
+  const stateDistribution = useMemo(() => {
+    const dist = {};
+    trainings.forEach(t => {
+      if (!t.state) return;
+      dist[t.state] = (dist[t.state] || 0) + 1;
+    });
+    return Object.entries(dist)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 10);
+  }, [trainings]);
+
+  const monthlyTrends = useMemo(() => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const trends = months.map(month => ({ month, trainings: 0, participants: 0 }));
+    trainings.forEach(t => {
+      if (!t.startDate) return;
+      const monthIndex = new Date(t.startDate).getMonth();
+      if (trends[monthIndex]) {
+        trends[monthIndex].trainings++;
+        trends[monthIndex].participants += t.participants || 0;
+      }
+    });
+    return trends;
+  }, [trainings]);
+
+  if (trainings.length === 0) {
+    return (
+      <MainLayout>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+          <CircularProgress />
+        </Box>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -36,7 +99,6 @@ const AnalyticsPage = () => {
         </Typography>
 
         <Grid container spacing={3}>
-          {/* Partner Performance */}
           <Grid size={{ xs: 12, lg: 6 }}>
             <Card>
               <CardContent>
@@ -51,19 +113,16 @@ const AnalyticsPage = () => {
                     <BarChart data={partnerPerformance.slice(0, 10)} layout="vertical" margin={{ left: 20 }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis type="number" />
-                      <YAxis 
-                        dataKey="name" 
-                        type="category" 
-                        width={180} 
+                      <YAxis
+                        dataKey="name"
+                        type="category"
+                        width={180}
                         fontSize={11}
                         tick={{ fill: 'currentColor' }}
                         interval={0}
-                        tickFormatter={(value) => {
-                          // Truncate long names with ellipsis
-                          return value.length > 25 ? value.substring(0, 22) + '...' : value;
-                        }}
+                        tickFormatter={(value) => value.length > 25 ? value.substring(0, 22) + '...' : value}
                       />
-                      <Tooltip 
+                      <Tooltip
                         content={({ active, payload }) => {
                           if (active && payload && payload.length) {
                             return (
@@ -92,7 +151,6 @@ const AnalyticsPage = () => {
             </Card>
           </Grid>
 
-          {/* State Distribution */}
           <Grid size={{ xs: 12, lg: 6 }}>
             <Card>
               <CardContent>
@@ -118,12 +176,11 @@ const AnalyticsPage = () => {
             </Card>
           </Grid>
 
-          {/* Monthly Trends */}
           <Grid size={{ xs: 12 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom fontWeight="bold">
-                  Monthly Training Trends (2025)
+                  Monthly Training Trends
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   Number of training programs and participants over time
@@ -146,7 +203,6 @@ const AnalyticsPage = () => {
             </Card>
           </Grid>
 
-          {/* Dynamic Report Builder - UNIQUE FEATURE */}
           <Grid size={{ xs: 12 }}>
             <DynamicReportBuilder />
           </Grid>
