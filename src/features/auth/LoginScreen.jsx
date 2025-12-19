@@ -22,6 +22,7 @@ import {
   Email as EmailIcon,
   Person as PersonIcon,
   Lock as LockIcon,
+  Login,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -48,7 +49,7 @@ const LoginScreen = () => {
     password: '',
     name: '',
   });
-  const [showDemoLogin, setShowDemoLogin] = useState(false);
+
 
   const handleTabChange = (event, newValue) => {
     setTab(newValue);
@@ -374,42 +375,31 @@ const LoginScreen = () => {
           </AnimatePresence>
 
           <Box sx={{ mt: 3, textAlign: 'center' }}>
-            <Button
-              size="small"
-              onClick={() => setShowDemoLogin(!showDemoLogin)}
-              sx={{ textTransform: 'none', color: 'text.secondary' }}
-            >
-              {showDemoLogin ? 'Hide' : 'Show'} Demo Login
-            </Button>
-            
-            <AnimatePresence>
-              {showDemoLogin && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                >
-                  <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.100', borderRadius: 2 }}>
-                    <Typography variant="caption" display="block" color="text.secondary" gutterBottom>
-                      Demo credentials for backend API:
-                    </Typography>
-                    <Typography variant="body2" fontWeight="medium">
-                      admin@ndma.gov.in / admin123
-                    </Typography>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={handleDemoLogin}
-                      disabled={loading}
-                      sx={{ mt: 1 }}
-                    >
-                      Login with Demo
-                    </Button>
-                  </Box>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Box>
+              <Divider sx={{ my: 2 }}>
+                <Typography variant="caption" color="text.secondary">
+                  Quick Access
+                </Typography>
+              </Divider>
+
+              <Button
+                fullWidth
+                variant="contained"
+                color="success"
+                size="large"
+                onClick={handleDemoLogin}
+                startIcon={<Login />}
+                sx={{
+                  py: 1.5,
+                  fontWeight: 'bold',
+                  background: 'linear-gradient(45deg, #2ecc71, #27ae60)',
+                  '&:hover': {
+                    background: 'linear-gradient(45deg, #27ae60, #229954)',
+                  },
+                }}
+              >
+                Demo Login (Admin Access)
+              </Button>
+            </Box>
         </Paper>
       </motion.div>
     </Box>
