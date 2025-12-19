@@ -12,8 +12,8 @@ import {
   StepLabel,
   Box,
   CircularProgress,
+  Grid2 as Grid,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
 import { useDispatch, useSelector } from 'react-redux';
 import { createTraining, updateTrainingById, selectTrainingsLoading, selectSelectedTraining } from './trainingsSlice';
 import { fetchPartners, selectAllPartners } from '../partners/partnersSlice';
