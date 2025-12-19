@@ -5,12 +5,19 @@ import StatCard from '../common/StatCard';
 import { selectFilteredTrainings } from '../../features/trainings/trainingsSlice';
 
 const KPIBar = () => {
+  console.log('[KPIBar] Component rendering...');
+  
   const filteredTrainings = useSelector(selectFilteredTrainings);
+  
+  console.log('[KPIBar] filteredTrainings:', filteredTrainings?.length, 'items');
+  console.log('[KPIBar] filteredTrainings sample:', filteredTrainings?.[0]);
 
-  const totalTrainings = filteredTrainings.length;
-  const totalParticipants = filteredTrainings.reduce((sum, t) => sum + t.participants, 0);
-  const activePartners = new Set(filteredTrainings.map(t => t.partnerId)).size;
-  const statesCovered = new Set(filteredTrainings.map(t => t.state)).size;
+  const totalTrainings = filteredTrainings?.length || 0;
+  const totalParticipants = filteredTrainings?.reduce((sum, t) => sum + (t.participants || 0), 0) || 0;
+  const activePartners = filteredTrainings ? new Set(filteredTrainings.map(t => t.partnerId)).size : 0;
+  const statesCovered = filteredTrainings ? new Set(filteredTrainings.map(t => t.state)).size : 0;
+  
+  console.log('[KPIBar] Computed values:', { totalTrainings, totalParticipants, activePartners, statesCovered });
 
   return (
     <Grid container spacing={3}>
