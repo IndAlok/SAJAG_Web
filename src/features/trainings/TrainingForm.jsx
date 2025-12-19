@@ -12,7 +12,7 @@ import {
   StepLabel,
   Box,
   CircularProgress,
-  Grid2 as Grid,
+  Grid,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { createTraining, updateTrainingById, selectTrainingsLoading, selectSelectedTraining } from './trainingsSlice';
@@ -89,7 +89,7 @@ const TrainingForm = ({ open, onClose }) => {
       case 0:
         return (
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12 }}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Training Title"
@@ -98,7 +98,7 @@ const TrainingForm = ({ open, onClose }) => {
                 required
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 select
                 fullWidth
@@ -114,7 +114,7 @@ const TrainingForm = ({ open, onClose }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 select
                 fullWidth
@@ -135,7 +135,7 @@ const TrainingForm = ({ open, onClose }) => {
       case 1:
         return (
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 select
                 fullWidth
@@ -151,7 +151,7 @@ const TrainingForm = ({ open, onClose }) => {
                 ))}
               </TextField>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="District"
@@ -160,7 +160,7 @@ const TrainingForm = ({ open, onClose }) => {
                 required
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 type="date"
@@ -171,7 +171,7 @@ const TrainingForm = ({ open, onClose }) => {
                 required
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 type="date"
@@ -187,7 +187,7 @@ const TrainingForm = ({ open, onClose }) => {
       case 2:
         return (
           <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 type="number"
@@ -197,7 +197,7 @@ const TrainingForm = ({ open, onClose }) => {
                 required
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 select
                 fullWidth
@@ -210,7 +210,7 @@ const TrainingForm = ({ open, onClose }) => {
                 <MenuItem value="Completed">Completed</MenuItem>
               </TextField>
             </Grid>
-            <Grid size={{ xs: 12 }}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 multiline

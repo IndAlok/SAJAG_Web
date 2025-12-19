@@ -1,4 +1,4 @@
-import { Box, Typography, Paper, FormControl, FormLabel, RadioGroup, Radio, Switch, FormControlLabel, Divider, Button, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, Paper, FormControl, FormLabel, RadioGroup, Radio, Switch, FormControlLabel, Divider, Button, Grid } from '@mui/material';
 import { Settings as SettingsIcon, Brightness4, Brightness7, Contrast, Language, Save } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,7 +47,7 @@ const SettingsPage = () => {
 
         <Grid container spacing={3}>
           {/* Theme Settings */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid item xs={12} md={6}>
             <Paper sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 {themeMode === 'dark' ? <Brightness4 /> : <Brightness7 />}
@@ -106,7 +106,7 @@ const SettingsPage = () => {
           </Grid>
 
           {/* Language Settings */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid item xs={12} md={6}>
             <Paper sx={{ p: 3 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <Language />
@@ -160,7 +160,7 @@ const SettingsPage = () => {
           </Grid>
 
           {/* Additional Settings */}
-          <Grid size={{ xs: 12 }}>
+          <Grid item xs={12}>
             <Paper sx={{ p: 3 }}>
               <Typography variant="h6" fontWeight="bold" gutterBottom>
                 Additional Preferences
@@ -168,25 +168,25 @@ const SettingsPage = () => {
               <Divider sx={{ mb: 2 }} />
 
               <Grid container spacing={2}>
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid item xs={12} sm={6}>
                   <FormControlLabel
                     control={<Switch defaultChecked />}
                     label="Enable notifications"
                   />
                 </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid item xs={12} sm={6}>
                   <FormControlLabel
                     control={<Switch defaultChecked />}
                     label="Auto-save form data"
                   />
                 </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid item xs={12} sm={6}>
                   <FormControlLabel
                     control={<Switch />}
                     label="Compact view mode"
                   />
                 </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid item xs={12} sm={6}>
                   <FormControlLabel
                     control={<Switch defaultChecked />}
                     label="Show data tooltips"
@@ -206,7 +206,7 @@ const SettingsPage = () => {
           </Grid>
 
           {/* About Section */}
-          <Grid size={{ xs: 12 }}>
+          <Grid item xs={12}>
             <Paper 
               sx={{ 
                 p: 3, 
@@ -239,15 +239,15 @@ const SettingsPage = () => {
                 optimization of preparedness programs across India.
               </Typography>
               <Grid container spacing={2} sx={{ position: 'relative', zIndex: 1 }}>
-                <Grid size={{ xs: 12, sm: 4 }}>
+                <Grid item xs={12} sm={4}>
                   <Typography variant="caption" sx={{ opacity: 0.9 }}>Version</Typography>
                   <Typography variant="body1" fontWeight="bold">2.0.0</Typography>
                 </Grid>
-                <Grid size={{ xs: 12, sm: 4 }}>
+                <Grid item xs={12} sm={4}>
                   <Typography variant="caption" sx={{ opacity: 0.9 }}>Platform</Typography>
                   <Typography variant="body1" fontWeight="bold">NDMA Official</Typography>
                 </Grid>
-                <Grid size={{ xs: 12, sm: 4 }}>
+                <Grid item xs={12} sm={4}>
                   <Typography variant="caption" sx={{ opacity: 0.9 }}>Release</Typography>
                   <Typography variant="body1" fontWeight="bold">December 2024</Typography>
                 </Grid>

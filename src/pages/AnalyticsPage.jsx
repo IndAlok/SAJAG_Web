@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { Box, Typography, Card, CardContent, Paper, CircularProgress, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, Card, CardContent, Paper, CircularProgress, Grid } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { motion } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
@@ -99,7 +99,7 @@ const AnalyticsPage = () => {
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, lg: 6 }}>
+          <Grid item xs={12} lg={6}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom fontWeight="bold">
@@ -151,7 +151,7 @@ const AnalyticsPage = () => {
             </Card>
           </Grid>
 
-          <Grid size={{ xs: 12, lg: 6 }}>
+          <Grid item xs={12} lg={6}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom fontWeight="bold">
@@ -176,7 +176,7 @@ const AnalyticsPage = () => {
             </Card>
           </Grid>
 
-          <Grid size={{ xs: 12 }}>
+          <Grid item xs={12}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom fontWeight="bold">
@@ -203,7 +203,7 @@ const AnalyticsPage = () => {
             </Card>
           </Grid>
 
-          <Grid size={{ xs: 12 }}>
+          <Grid item xs={12}>
             <DynamicReportBuilder />
           </Grid>
         </Grid>

@@ -1,4 +1,4 @@
-import { Box, Typography, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
 import MainLayout from '../components/layout/MainLayout';
 import Breadcrumbs from '../components/common/Breadcrumbs';
@@ -25,29 +25,24 @@ const DashboardPage = () => {
           Comprehensive view of NDMA training programs and disaster management initiatives across India
         </Typography>
 
-        {/* KPI Cards */}
         <Box sx={{ mb: 3 }}>
           <KPIBar />
         </Box>
 
         <Grid container spacing={3}>
-          {/* Map */}
-          <Grid size={{ xs: 12, lg: 8 }}>
+          <Grid item xs={12} lg={8}>
             <TrainingsHeatmap />
           </Grid>
 
-          {/* Pie Chart */}
-          <Grid size={{ xs: 12, lg: 4 }}>
+          <Grid item xs={12} lg={4}>
             <ThematicCoveragePieChart />
           </Grid>
 
-          {/* AI Alerts - UNIQUE FEATURE */}
-          <Grid size={{ xs: 12 }}>
+          <Grid item xs={12}>
             <AIPredictiveAlerts />
           </Grid>
 
-          {/* Recent Activity */}
-          <Grid size={{ xs: 12 }}>
+          <Grid item xs={12}>
             <RecentActivityTimeline />
           </Grid>
         </Grid>
@@ -57,3 +52,4 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
+

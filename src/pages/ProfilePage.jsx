@@ -1,4 +1,4 @@
-import { Box, Typography, Paper, Avatar, Chip, Divider, List, ListItem, ListItemText, Grid2 as Grid } from '@mui/material';
+import { Box, Typography, Paper, Avatar, Chip, Divider, List, ListItem, ListItemText, Grid } from '@mui/material';
 import { Email, Badge, LocationOn, CalendarToday, Shield } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
@@ -42,7 +42,7 @@ const ProfilePage = () => {
 
         <Grid container spacing={3}>
           {/* Profile Card */}
-          <Grid size={{ xs: 12, md: 4 }}>
+          <Grid item xs={12} md={4}>
             <Paper sx={{ p: 3, textAlign: 'center' }}>
               <Avatar
                 sx={{
@@ -109,7 +109,7 @@ const ProfilePage = () => {
           </Grid>
 
           {/* Activity & Stats */}
-          <Grid size={{ xs: 12, md: 8 }}>
+          <Grid item xs={12} md={8}>
             <Paper sx={{ p: 3, mb: 3 }}>
               <Typography variant="h6" fontWeight="bold" gutterBottom>
                 Activity Overview
@@ -117,7 +117,7 @@ const ProfilePage = () => {
               <Divider sx={{ mb: 2 }} />
               
               <Grid container spacing={2}>
-                <Grid size={{ xs: 6, sm: 3 }}>
+                <Grid item xs={6} sm={3}>
                   <Box sx={{ textAlign: 'center', p: 2 }}>
                     <Typography variant="h4" color="primary.main" fontWeight="bold">
                       45
@@ -127,7 +127,7 @@ const ProfilePage = () => {
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid size={{ xs: 6, sm: 3 }}>
+                <Grid item xs={6} sm={3}>
                   <Box sx={{ textAlign: 'center', p: 2 }}>
                     <Typography variant="h4" color="success.main" fontWeight="bold">
                       2,340
@@ -137,7 +137,7 @@ const ProfilePage = () => {
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid size={{ xs: 6, sm: 3 }}>
+                <Grid item xs={6} sm={3}>
                   <Box sx={{ textAlign: 'center', p: 2 }}>
                     <Typography variant="h4" color="warning.main" fontWeight="bold">
                       12
@@ -147,7 +147,7 @@ const ProfilePage = () => {
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid size={{ xs: 6, sm: 3 }}>
+                <Grid item xs={6} sm={3}>
                   <Box sx={{ textAlign: 'center', p: 2 }}>
                     <Typography variant="h4" color="info.main" fontWeight="bold">
                       98%
@@ -173,34 +173,34 @@ const ProfilePage = () => {
               <Grid container spacing={1}>
                 {role === 'ndma_admin' ? (
                   <>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid item xs={12} sm={6}>
                       <Chip label="View All Training Programs" color="success" sx={{ width: '100%' }} />
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid item xs={12} sm={6}>
                       <Chip label="Create/Edit/Delete Trainings" color="success" sx={{ width: '100%' }} />
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid item xs={12} sm={6}>
                       <Chip label="Manage All Partners" color="success" sx={{ width: '100%' }} />
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid item xs={12} sm={6}>
                       <Chip label="Generate Reports (All Data)" color="success" sx={{ width: '100%' }} />
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid item xs={12} sm={6}>
                       <Chip label="Full GIS Portal Access" color="success" sx={{ width: '100%' }} />
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid item xs={12} sm={6}>
                       <Chip label="System Settings Access" color="success" sx={{ width: '100%' }} />
                     </Grid>
                   </>
                 ) : (
                   <>
-                    <Grid size={{ xs: 12 }}>
+                    <Grid item xs={12}>
                       <Chip label="Limited to Assigned Region/Partner" color="warning" sx={{ width: '100%' }} />
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid item xs={12} sm={6}>
                       <Chip label="View Trainings (Filtered)" color="info" sx={{ width: '100%' }} />
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6 }}>
+                    <Grid item xs={12} sm={6}>
                       <Chip label="Generate Reports (Filtered Data)" color="info" sx={{ width: '100%' }} />
                     </Grid>
                   </>

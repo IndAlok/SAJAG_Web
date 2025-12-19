@@ -1,4 +1,4 @@
-import { Grid2 as Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { School, People, Business, LocationOn } from '@mui/icons-material';
 import StatCard from '../common/StatCard';
@@ -7,7 +7,6 @@ import { selectFilteredTrainings } from '../../features/trainings/trainingsSlice
 const KPIBar = () => {
   const filteredTrainings = useSelector(selectFilteredTrainings);
 
-  // Apply RBAC filtering to stats
   const totalTrainings = filteredTrainings.length;
   const totalParticipants = filteredTrainings.reduce((sum, t) => sum + t.participants, 0);
   const activePartners = new Set(filteredTrainings.map(t => t.partnerId)).size;
@@ -15,7 +14,7 @@ const KPIBar = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid item xs={12} sm={6} md={3}>
         <StatCard
           title="Total Trainings"
           value={totalTrainings}
@@ -26,7 +25,7 @@ const KPIBar = () => {
         />
       </Grid>
       
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid item xs={12} sm={6} md={3}>
         <StatCard
           title="Total Participants"
           value={totalParticipants}
@@ -37,7 +36,7 @@ const KPIBar = () => {
         />
       </Grid>
       
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid item xs={12} sm={6} md={3}>
         <StatCard
           title="Active Partners"
           value={activePartners}
@@ -46,7 +45,7 @@ const KPIBar = () => {
         />
       </Grid>
       
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      <Grid item xs={12} sm={6} md={3}>
         <StatCard
           title="States Covered"
           value={statesCovered}
@@ -59,3 +58,4 @@ const KPIBar = () => {
 };
 
 export default KPIBar;
+

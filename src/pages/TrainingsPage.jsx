@@ -9,7 +9,7 @@ import {
   Chip,
   InputAdornment,
   CircularProgress,
-  Grid2 as Grid,
+  Grid,
 } from '@mui/material';
 import {
   Add,
@@ -263,7 +263,7 @@ const TrainingsPage = () => {
 
         <Paper sx={{ p: 2, mb: 2 }}>
           <Grid container spacing={2} alignItems="center">
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid item xs={12} md={4}>
               <TextField
                 fullWidth
                 placeholder="Search by title, ID, or location..."
@@ -279,7 +279,7 @@ const TrainingsPage = () => {
               />
             </Grid>
             
-            <Grid size={{ xs: 12, md: 8 }} sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+            <Grid item xs={12} md={8} sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
               <Button
                 startIcon={<FilterList />}
                 onClick={() => setShowFilters(!showFilters)}
@@ -298,7 +298,7 @@ const TrainingsPage = () => {
 
           {showFilters && (
             <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Grid item xs={12} sm={6} md={3}>
                 <TextField
                   select
                   fullWidth
@@ -316,7 +316,7 @@ const TrainingsPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Grid item xs={12} sm={6} md={3}>
                 <TextField
                   select
                   fullWidth
@@ -334,7 +334,7 @@ const TrainingsPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Grid item xs={12} sm={6} md={3}>
                 <TextField
                   select
                   fullWidth
@@ -351,7 +351,7 @@ const TrainingsPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Grid item xs={12} sm={6} md={3}>
                 <TextField
                   select
                   fullWidth
@@ -369,7 +369,7 @@ const TrainingsPage = () => {
                 </TextField>
               </Grid>
 
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <Button variant="text" onClick={handleResetFilters}>
                   Clear All Filters
                 </Button>

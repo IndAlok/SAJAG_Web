@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, CardContent, Typography, Box, Button, TextField, MenuItem, Paper, Chip, Grid2 as Grid } from '@mui/material';
+import { Card, CardContent, Typography, Box, Button, TextField, MenuItem, Paper, Chip, Grid } from '@mui/material';
 import { PictureAsPdf, Download } from '@mui/icons-material';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -240,7 +240,7 @@ const DynamicReportBuilder = () => {
           }}
         >
           <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 3 }}>
+            <Grid item xs={12} md={3}>
               <TextField
                 select
                 fullWidth
@@ -260,7 +260,7 @@ const DynamicReportBuilder = () => {
 
             {reportConfig.dateRange === 'custom' && (
               <>
-                <Grid size={{ xs: 12, md: 3 }}>
+                <Grid item xs={12} md={3}>
                   <TextField
                     fullWidth
                     type="date"
@@ -271,7 +271,7 @@ const DynamicReportBuilder = () => {
                     InputLabelProps={{ shrink: true }}
                   />
                 </Grid>
-                <Grid size={{ xs: 12, md: 3 }}>
+                <Grid item xs={12} md={3}>
                   <TextField
                     fullWidth
                     type="date"
@@ -285,7 +285,7 @@ const DynamicReportBuilder = () => {
               </>
             )}
 
-            <Grid size={{ xs: 12, md: 3 }}>
+            <Grid item xs={12} md={3}>
               <TextField
                 select
                 fullWidth
@@ -301,7 +301,7 @@ const DynamicReportBuilder = () => {
               </TextField>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 3 }}>
+            <Grid item xs={12} md={3}>
               <TextField
                 select
                 fullWidth
@@ -317,7 +317,7 @@ const DynamicReportBuilder = () => {
               </TextField>
             </Grid>
 
-            <Grid size={{ xs: 12 }}>
+            <Grid item xs={12}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
