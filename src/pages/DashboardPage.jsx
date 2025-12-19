@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Box, Typography, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
 import MainLayout from '../components/layout/MainLayout';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import KPIBar from '../components/dashboard/KPIBar';
@@ -7,8 +9,19 @@ import TrainingsHeatmap from '../components/dashboard/TrainingsHeatmap';
 import ThematicCoveragePieChart from '../components/dashboard/ThematicCoveragePieChart';
 import RecentActivityTimeline from '../components/dashboard/RecentActivityTimeline';
 import AIPredictiveAlerts from '../components/dashboard/AIPredictiveAlerts';
+import { fetchTrainings, selectTrainingsLoading } from '../features/trainings/trainingsSlice';
+import { fetchPartners } from '../features/partners/partnersSlice';
 
 const DashboardPage = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector(selectTrainingsLoading);
+
+  useEffect(() => {
+    console.log('[DashboardPage] Fetching trainings and partners...');
+    dispatch(fetchTrainings());
+    dispatch(fetchPartners());
+  }, [dispatch]);
+
   return (
     <MainLayout>
       <motion.div
