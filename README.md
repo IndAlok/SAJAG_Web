@@ -1,269 +1,213 @@
 # SAJAG
 
-**Smart Advanced Jaagruk Governance Platform**
+**Centralized Disaster Management Training Platform for India**
 
-A production-grade disaster management training platform developed for the National Disaster Management Authority (NDMA), India. Digitizes, tracks, and optimizes disaster preparedness training programs across all 36 states and union territories.
-
----
-
-## The Problem
-
-India faces 5-6 major natural disasters annually, affecting over 50 million people. NDMA conducts thousands of training programs through partner organizations, but tracking relies on manual processes and fragmented systems, causing:
-
-- No centralized visibility across states
-- Difficulty identifying coverage gaps before disaster seasons
-- Limited analytics for measuring effectiveness
-- Manual reporting delays
+SAJAG is a full-stack platform built for the National Disaster Management Authority to digitize and streamline disaster preparedness training across all 36 states and union territories. It replaces manual tracking with a unified system that provides real-time visibility, analytics, and coordination capabilities.
 
 ---
 
-## The Solution
+## Why This Exists
 
-SAJAG provides unified digital infrastructure for disaster training management:
+India experiences multiple natural disasters every year, from floods in the east to earthquakes in the north. NDMA coordinates thousands of training programs through various partner organizations, but the tracking has historically been fragmented across spreadsheets and disconnected systems.
 
-- Centralized program lifecycle management
-- Role-based access control (NDMA, State SDMA, Partners)
-- Geographic visualization with interactive maps
-- Advanced analytics and reporting
-- AI-powered assistant (Gemini 2.0 Flash)
-- Dynamic report generation with PDF/CSV export
+This creates real problems: nobody knows which regions are underserved until it's too late, measuring training effectiveness is guesswork, and coordination between national and state authorities relies on phone calls and emails.
+
+SAJAG solves this by putting everything in one place—programs, partners, participants, and performance metrics—accessible to everyone who needs it.
 
 ---
 
-## Architecture
+## What It Does
 
-**Frontend:** React 19, Material-UI 7, Redux Toolkit, Recharts, Leaflet
+The platform handles the complete lifecycle of disaster training programs:
 
-**Backend:** Node.js, Express, Prisma ORM, PostgreSQL (NeonDB)
+**Program Management**
+Track every training program from planning to completion. Record participants, dates, locations, and outcomes. Bulk operations handle large-scale updates efficiently.
 
-**Deployment:** Vercel (Frontend) + Render (Backend)
+**Partner Coordination**
+Manage relationships with training organizations including NIDM, ATIs, NGOs, and government ministries. See which partners are performing well and which need support.
+
+**Geographic Intelligence**
+Interactive maps show training distribution across India. Quickly identify coverage gaps before monsoon season hits or earthquake-prone areas go undertrained.
+
+**Analytics Dashboard**
+Real-time metrics on training coverage, participant counts, thematic distribution, and partner performance. Export reports as PDF or CSV for stakeholder presentations.
+
+**AI Assistant**
+Built-in Gemini-powered assistant answers questions about the training data, identifies gaps, and provides recommendations based on seasonal disaster patterns.
+
+**Role-Based Access**
+NDMA administrators see everything. State SDMA managers see their jurisdiction. Training partners see only their programs. Everyone gets exactly the access they need.
 
 ---
 
-## Project Structure
+## Technical Stack
+
+**Frontend**
+- React 19 with Material-UI 7
+- Redux Toolkit for state management
+- Recharts for data visualization
+- Leaflet for interactive maps
+- Axios for API communication
+
+**Backend**
+- Node.js with Express
+- Prisma ORM with PostgreSQL
+- JWT authentication
+- bcrypt password hashing
+
+**Infrastructure**
+- Vercel for frontend hosting
+- Render for backend API
+- NeonDB for serverless PostgreSQL
+
+---
+
+## Project Layout
 
 ```
 SAJAG/
-├── src/                    Frontend application
-│   ├── components/         Reusable UI components
-│   ├── features/           Redux slices and feature logic
-│   ├── pages/              Route-level components
-│   ├── services/           API service layer
-│   └── theme/              MUI theme configuration
-├── SAJAG_Backend/          Backend API
-│   ├── prisma/             Database schema and seeds
-│   ├── controllers/        Request handlers
-│   ├── routes/             API routes
-│   └── config/             Database config
-├── public/                 Static assets
-├── vercel.json            Vercel configuration
-└── package.json           Frontend dependencies
+├── src/                    React frontend
+│   ├── components/         Reusable UI pieces
+│   ├── features/           Redux slices and logic
+│   ├── pages/              Route components
+│   └── services/           API communication
+├── SAJAG_Backend/          Express API
+│   ├── prisma/             Database schema
+│   ├── controllers/        Route handlers
+│   └── routes/             API endpoints
+├── public/                 Static files
+└── package.json            Dependencies
 ```
 
 ---
 
-## Local Development
+## Getting Started Locally
 
-### Prerequisites
-- Node.js 18+
-- NeonDB account (neon.tech)
+**Prerequisites**
+- Node.js 18 or later
+- A NeonDB account (free tier works fine)
 
-### Setup
+**Setup**
 
+Clone and install:
 ```bash
 git clone https://github.com/IndAlok/SAJAG.git
 cd SAJAG
-
 npm install
-
 cd SAJAG_Backend
 npm install
-npx prisma db push
-npm run db:seed
-cd ..
 ```
 
-### Configure Environment
-
-**Frontend (.env):**
-```env
-VITE_API_BASE_URL=http://localhost:5000/api
-VITE_APP_NAME=SAJAG
-VITE_ENABLE_MOCK_DATA=false
-VITE_GEMINI_API_KEY=your_gemini_key
+Configure the backend by editing `SAJAG_Backend/.env`:
 ```
-
-**Backend (SAJAG_Backend/.env):**
-```env
 DATABASE_URL=your_neondb_connection_string
 JWT_SECRET=sajag_ndma_secure_jwt_token_2025_sih_hackathon_production_key_v1
 PORT=5000
-NODE_ENV=development
 ```
 
-### Run
-
+Initialize the database:
 ```bash
-cd SAJAG_Backend && npm run dev
-cd .. && npm run dev
+npm run db:push
+npm run db:seed
 ```
 
-Frontend: http://localhost:5173
-Backend: http://localhost:5000
+Configure the frontend by editing `.env`:
+```
+VITE_API_BASE_URL=http://localhost:5000/api
+VITE_APP_NAME=SAJAG
+```
 
-**Default Login:** admin@ndma.gov.in / admin123
+Start both servers:
+```bash
+# Terminal 1 - Backend
+cd SAJAG_Backend && npm run dev
+
+# Terminal 2 - Frontend
+npm run dev
+```
+
+Open http://localhost:5173 and log in with `admin@ndma.gov.in` / `admin123`.
 
 ---
 
-## Deployment
+## Deploying to Production
 
 ### Frontend on Vercel
 
-**Step 1: Push to GitHub**
-```bash
-git add .
-git commit -m "Deploy"
-git push origin main
-```
-
-**Step 2: Import to Vercel**
-1. Go to vercel.com/new
-2. Import your GitHub repository
-3. Framework Preset: Vite
-4. Root Directory: ./
-
-**Step 3: Configure Environment Variables**
-
-Add these in Vercel Dashboard > Settings > Environment Variables:
-
-| Variable | Value |
-|----------|-------|
-| VITE_API_BASE_URL | https://your-app.onrender.com/api |
-| VITE_APP_NAME | SAJAG |
-| VITE_ENABLE_MOCK_DATA | false |
-| VITE_GEMINI_API_KEY | your_gemini_api_key |
-
-**Step 4: Deploy**
-
-Click Deploy. Vercel builds and deploys automatically.
-
----
+1. Push your code to GitHub
+2. Import the repository in Vercel
+3. Set Framework Preset to Vite
+4. Add environment variables:
+   - `VITE_API_BASE_URL` = your Render backend URL + `/api`
+   - `VITE_APP_NAME` = SAJAG
+5. Deploy
 
 ### Backend on Render
 
-**Step 1: Prepare Backend Repository**
+1. Create a new Web Service in Render
+2. Connect your GitHub repository
+3. Set Root Directory to `SAJAG_Backend`
+4. Build Command: `npm install && npx prisma generate`
+5. Start Command: `npm start`
+6. Add environment variables:
+   - `DATABASE_URL` = your NeonDB connection string
+   - `JWT_SECRET` = the pre-configured token
+   - `PORT` = 5000
+   - `NODE_ENV` = production
+7. Deploy
 
-Option A: Deploy from subfolder (same repo)
-- Root Directory: SAJAG_Backend
-
-Option B: Separate repository
+After deployment, initialize the database locally:
 ```bash
 cd SAJAG_Backend
-git init
-git add .
-git commit -m "Backend deploy"
-git remote add origin https://github.com/IndAlok/SAJAG-Backend.git
-git push -u origin main
-```
-
-**Step 2: Create Render Web Service**
-1. Go to render.com > New > Web Service
-2. Connect GitHub repository
-3. Configure:
-   - Name: sajag-backend
-   - Runtime: Node
-   - Build Command: npm install && npx prisma generate
-   - Start Command: npm start
-   - Root Directory: SAJAG_Backend (if using same repo)
-
-**Step 3: Configure Environment Variables**
-
-Add in Render Dashboard > Environment:
-
-| Variable | Value |
-|----------|-------|
-| DATABASE_URL | postgresql://user:pass@host/db?sslmode=require |
-| JWT_SECRET | sajag_ndma_secure_jwt_token_2025_sih_hackathon_production_key_v1 |
-| PORT | 5000 |
-| NODE_ENV | production |
-| FRONTEND_URL | https://your-app.vercel.app |
-
-**Step 4: Deploy**
-
-Render builds and deploys automatically.
-
-**Step 5: Initialize Database**
-
-After first deployment, run in Render Shell or locally:
-```bash
-npx prisma db push
+npm run db:push
 npm run db:seed
 ```
 
 ---
 
-## Environment Variables Reference
+## API Reference
 
-### Frontend (Vercel)
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| VITE_API_BASE_URL | Yes | Backend API URL (Render URL + /api) |
-| VITE_APP_NAME | No | Application name, default: SAJAG |
-| VITE_ENABLE_MOCK_DATA | No | Use mock data, default: false |
-| VITE_GEMINI_API_KEY | No | Gemini API key for AI assistant |
-
-### Backend (Render)
-
-| Variable | Required | Description |
-|----------|----------|-------------|
-| DATABASE_URL | Yes | NeonDB PostgreSQL connection string |
-| JWT_SECRET | Yes | JWT signing secret (pre-configured) |
-| PORT | No | Server port, default: 5000 |
-| NODE_ENV | No | Environment, default: production |
-| FRONTEND_URL | No | Frontend URL for CORS |
-
----
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | /api/auth/register | Register user |
-| POST | /api/auth/login | Login |
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| POST | /api/auth/register | Create account |
+| POST | /api/auth/login | Authenticate |
 | GET | /api/auth/me | Current user |
-| GET | /api/programs | List training programs |
+| GET | /api/programs | List programs |
 | POST | /api/programs | Create program |
 | PUT | /api/programs/:id | Update program |
 | DELETE | /api/programs/:id | Delete program |
 | GET | /api/partners | List partners |
-| POST | /api/partners | Create partner |
-| GET | /api/analytics/stats | Dashboard statistics |
-| GET | /api/analytics/thematic-coverage | Theme distribution |
+| POST | /api/partners | Add partner |
+| GET | /api/analytics/stats | Dashboard stats |
+| GET | /api/analytics/thematic-coverage | Theme breakdown |
 | GET | /api/analytics/geographic-spread | State distribution |
-| GET | /api/analytics/partner-leaderboard | Partner rankings |
-| GET | /api/analytics/status-distribution | Status breakdown |
 | GET | /api/health | Health check |
 
 ---
 
-## Features
+## Environment Variables
 
-- Role-based access control (NDMA Admin, State SDMA, Partners)
-- Interactive map visualization of training locations
-- Advanced analytics with charts and KPI tracking
-- AI assistant for queries and recommendations
-- PDF/CSV report generation
-- Bilingual support (English/Hindi)
-- Dark mode and high contrast themes
-- Responsive design for all devices
+**Frontend (Vercel)**
+| Variable | Required | Default |
+|----------|----------|---------|
+| VITE_API_BASE_URL | Yes | - |
+| VITE_APP_NAME | No | SAJAG |
+| VITE_GEMINI_API_KEY | No | - |
+
+**Backend (Render)**
+| Variable | Required | Default |
+|----------|----------|---------|
+| DATABASE_URL | Yes | - |
+| JWT_SECRET | Yes | - |
+| PORT | No | 5000 |
+| NODE_ENV | No | production |
 
 ---
 
 ## License
 
-MIT License
+MIT
 
 ---
 
-Developed for Smart India Hackathon 2025 - Problem Statement SIH-1643
+Built for NDMA India

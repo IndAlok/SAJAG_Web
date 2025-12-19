@@ -224,10 +224,10 @@ const Sidebar = () => {
             }}
           >
             <Typography variant="caption" color="text.secondary" display="block" gutterBottom fontWeight={600}>
-              {language === 'hi' ? 'संस्करण' : 'Version'}: 1.0.0
+              {language === 'hi' ? 'संस्करण' : 'Version'}: 2.0.0
             </Typography>
             <Typography variant="caption" color="text.secondary" display="block">
-              SIH 2025 - {language === 'hi' ? 'समस्या कथन' : 'Problem'} #25258
+              NDMA Training Platform
             </Typography>
           </Box>
         </motion.div>

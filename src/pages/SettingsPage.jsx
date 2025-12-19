@@ -234,21 +234,22 @@ const SettingsPage = () => {
                 About SAJAG Platform
               </Typography>
               <Typography variant="body2" sx={{ mb: 2, opacity: 0.95, position: 'relative', zIndex: 1 }}>
-                SAJAG (Smart & Adaptive Joint Action for Government-wide Awareness) is a comprehensive 
-                disaster management training platform developed for the National Disaster Management Authority (NDMA).
+                SAJAG is a comprehensive disaster management training platform developed for the 
+                National Disaster Management Authority (NDMA), enabling centralized tracking and 
+                optimization of preparedness programs across India.
               </Typography>
               <Grid container spacing={2} sx={{ position: 'relative', zIndex: 1 }}>
                 <Grid size={{ xs: 12, sm: 4 }}>
                   <Typography variant="caption" sx={{ opacity: 0.9 }}>Version</Typography>
-                  <Typography variant="body1" fontWeight="bold">1.0.0</Typography>
+                  <Typography variant="body1" fontWeight="bold">2.0.0</Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 4 }}>
-                  <Typography variant="caption" sx={{ opacity: 0.9 }}>SIH Problem Statement</Typography>
-                  <Typography variant="body1" fontWeight="bold">#25258</Typography>
+                  <Typography variant="caption" sx={{ opacity: 0.9 }}>Platform</Typography>
+                  <Typography variant="body1" fontWeight="bold">NDMA Official</Typography>
                 </Grid>
                 <Grid size={{ xs: 12, sm: 4 }}>
-                  <Typography variant="caption" sx={{ opacity: 0.9 }}>Year</Typography>
-                  <Typography variant="body1" fontWeight="bold">2025</Typography>
+                  <Typography variant="caption" sx={{ opacity: 0.9 }}>Release</Typography>
+                  <Typography variant="body1" fontWeight="bold">December 2024</Typography>
                 </Grid>
               </Grid>
             </Paper>

@@ -42,6 +42,21 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.get('/api', (req, res) => {
+  res.json({
+    success: true,
+    message: 'SAJAG API',
+    version: '2.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      programs: '/api/programs',
+      partners: '/api/partners',
+      analytics: '/api/analytics',
+      health: '/api/health',
+    },
+  });
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.statusCode || 500).json({

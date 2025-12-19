@@ -173,31 +173,6 @@ const LoginScreen = () => {
                     NDMA
                   </Box>
                 </motion.div>
-                <motion.div
-                  initial={{ scale: 0, rotate: 180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3, type: 'spring' }}
-                  whileHover={{ scale: 1.1, rotate: -360 }}
-                >
-                  <Box
-                    sx={{
-                      width: 90,
-                      height: 90,
-                      borderRadius: 3,
-                      background: 'linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontWeight: 'bold',
-                      fontSize: '1.5rem',
-                      boxShadow: '0 10px 30px rgba(124, 58, 237, 0.4)',
-                      transition: 'all 0.3s ease',
-                    }}
-                  >
-                    SIH
-                  </Box>
-                </motion.div>
               </Box>
               
               <motion.div
