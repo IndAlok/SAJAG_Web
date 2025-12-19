@@ -59,29 +59,9 @@ const TrainingsPage = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectionModel, setSelectionModel] = useState([]);
 
-  // Debug logging
-  console.log('[TrainingsPage] Component rendered');
-  console.log('[TrainingsPage] trainings count:', trainings?.length);
-  console.log('[TrainingsPage] loading:', loading);
-  console.log('[TrainingsPage] hasFullAccess:', hasFullAccess);
-  console.log('[TrainingsPage] partners count:', partners?.length);
-
   useEffect(() => {
-    console.log('[TrainingsPage] useEffect triggered - fetching trainings and partners');
-    dispatch(fetchTrainings())
-      .then((result) => {
-        console.log('[TrainingsPage] fetchTrainings completed:', result.type, result.payload?.data?.length || 'no data');
-      })
-      .catch((err) => {
-        console.error('[TrainingsPage] fetchTrainings FAILED:', err);
-      });
-    dispatch(fetchPartners())
-      .then((result) => {
-        console.log('[TrainingsPage] fetchPartners completed:', result.type);
-      })
-      .catch((err) => {
-        console.error('[TrainingsPage] fetchPartners FAILED:', err);
-      });
+    dispatch(fetchTrainings());
+    dispatch(fetchPartners());
   }, [dispatch]);
 
   const states = [...new Set(trainings.map(t => t.state))].sort();

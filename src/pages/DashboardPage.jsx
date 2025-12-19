@@ -17,7 +17,6 @@ const DashboardPage = () => {
   const loading = useSelector(selectTrainingsLoading);
 
   useEffect(() => {
-    console.log('[DashboardPage] Fetching trainings and partners...');
     dispatch(fetchTrainings());
     dispatch(fetchPartners());
   }, [dispatch]);
