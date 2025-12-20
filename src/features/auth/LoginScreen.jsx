@@ -1,46 +1,52 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Paper,
   Typography,
   TextField,
   Button,
-  Divider,
-  Alert,
-  CircularProgress,
-  IconButton,
-  InputAdornment,
   Tabs,
   Tab,
+  InputAdornment,
+  MenuItem,
+  CircularProgress,
+  IconButton,
+  Alert,
+  Divider,
+  useTheme,
+  Grid
 } from '@mui/material';
 import {
   Visibility,
   VisibilityOff,
-  Google as GoogleIcon,
   Email as EmailIcon,
   Person as PersonIcon,
   Lock as LockIcon,
   Login,
+  LocationOn,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  loginWithGoogle, 
-  loginWithEmail, 
-  signUpWithEmail,
-  loginUser,
+  loginUser, 
+  registerUser, 
   setFirebaseUser,
-  selectAuthLoading,
+  clearError, 
+  selectAuthLoading, 
   selectAuthError,
-  clearError,
-} from './authSlice';
+  selectIsAuthenticated
+} from '../../features/auth/authSlice';
+import ParticleBackground from '../../components/common/ParticleBackground';
+import { INDIAN_STATES_AND_UTS } from '../../utils/constants';
 
 const LoginScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const theme = useTheme();
   const loading = useSelector(selectAuthLoading);
   const authError = useSelector(selectAuthError);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   
   const [tab, setTab] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
@@ -48,48 +54,44 @@ const LoginScreen = () => {
     email: '',
     password: '',
     name: '',
+    state: '', // New state field
   });
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleTabChange = (event, newValue) => {
     setTab(newValue);
     dispatch(clearError());
+    setFormData({ email: '', password: '', name: '', state: '' });
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    dispatch(clearError());
+    if (authError) dispatch(clearError());
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      await dispatch(loginWithGoogle()).unwrap();
-      navigate('/dashboard');
-    } catch (err) {
-      console.error('Google login error:', err);
-    }
-  };
-
-  const handleEmailSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) return;
-
-    try {
-      if (tab === 0) {
-        await dispatch(loginWithEmail({ 
-          email: formData.email, 
-          password: formData.password 
-        })).unwrap();
-      } else {
-        await dispatch(signUpWithEmail({ 
-          email: formData.email, 
-          password: formData.password,
-          name: formData.name 
-        })).unwrap();
-      }
-      navigate('/dashboard');
-    } catch (err) {
-      console.error('Email auth error:', err);
+    if (tab === 0) {
+      dispatch(loginUser({ email: formData.email, password: formData.password }))
+        .unwrap()
+        .then(() => navigate('/dashboard'))
+        .catch((err) => console.error('Login failed:', err));
+    } else {
+      dispatch(registerUser({ 
+        name: formData.name, 
+        email: formData.email, 
+        password: formData.password,
+        state: formData.state || 'Delhi' // Default to Delhi if not selected (or handle validation)
+      }))
+        .unwrap()
+        .then(() => navigate('/dashboard'))
+        .catch((err) => console.error('Registration failed:', err));
     }
   };
 
@@ -101,6 +103,7 @@ const LoginScreen = () => {
       email: 'admin@ndma.gov.in',
       organization: 'National Disaster Management Authority',
       role: 'Admin',
+      state: null, // Admin sees all
     };
     const demoToken = 'demo-session-' + Date.now();
     localStorage.setItem('sajag_token', demoToken);
@@ -113,268 +116,262 @@ const LoginScreen = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        width: '100vw',
+        height: '100vh',
+        overflow: 'hidden',
+        position: 'relative',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-        padding: 2,
-        position: 'relative',
-        overflow: 'hidden',
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', // Fallback
       }}
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          overflow: 'hidden',
-        }}
-      >
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            style={{
-              position: 'absolute',
-              width: Math.random() * 100 + 50,
-              height: Math.random() * 100 + 50,
-              borderRadius: '50%',
-              background: `radial-gradient(circle, rgba(103,126,234,0.1) 0%, transparent 70%)`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              repeatType: 'reverse',
-            }}
-          />
-        ))}
-      </Box>
+      <ParticleBackground />
 
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
+        style={{ zIndex: 10, width: '100%', maxWidth: '1000px', padding: '20px' }}
       >
-        <Paper
-          elevation={24}
-          sx={{
-            p: 4,
-            width: { xs: '100%', sm: 420 },
-            borderRadius: 4,
-            background: 'rgba(255, 255, 255, 0.95)',
+        <Grid container spacing={0} sx={{ borderRadius: 4, overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+          {/* Left Panel - Branding */}
+          <Grid item xs={12} md={5} sx={{ 
+            background: 'rgba(30, 41, 59, 0.8)',
             backdropFilter: 'blur(20px)',
-            position: 'relative',
-            zIndex: 1,
-          }}
-        >
-          <Box sx={{ textAlign: 'center', mb: 3 }}>
+            p: 4,
+            display: { xs: 'none', md: 'flex' },
+            flexDirection: 'column',
+            justifyContent: 'center',
+            color: 'white',
+            borderRight: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200 }}
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
             >
-              <Box
-                sx={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 3,
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: '1.8rem',
-                  mx: 'auto',
-                  mb: 2,
-                  boxShadow: '0 10px 30px rgba(102, 126, 234, 0.4)',
-                }}
-              >
-                S
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Box 
+                  component="img" 
+                  src="/sajag_logo.png" 
+                  alt="SAJAG Logo"
+                  sx={{ width: 60, height: 60, mr: 2 }}
+                  onError={(e) => { e.target.style.display = 'none' }} // Fallback if image missing
+                />
+                <Typography variant="h3" fontWeight="bold" sx={{ background: 'linear-gradient(45deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  SAJAG
+                </Typography>
+              </Box>
+              <Typography variant="h5" fontWeight="600" gutterBottom>
+                Disaster Training Platform
+              </Typography>
+              <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 4 }}>
+                Empowering India with preparedness. Advanced analytics, real-time monitoring, and comprehensive training management.
+              </Typography>
+              
+              <Box sx={{ mt: 'auto' }}>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+                  © 2024 NDMA. All rights reserved.
+                </Typography>
               </Box>
             </motion.div>
-            
-            <Typography variant="h4" fontWeight="bold" color="primary.main">
-              SAJAG
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              NDMA Training Management Platform
-            </Typography>
-          </Box>
+          </Grid>
 
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Button
-              fullWidth
-              variant="outlined"
-              size="large"
-              startIcon={
-                <motion.div
-                  animate={{ rotate: loading ? 360 : 0 }}
-                  transition={{ duration: 1, repeat: loading ? Infinity : 0 }}
-                >
-                  <GoogleIcon sx={{ color: '#4285F4' }} />
-                </motion.div>
-              }
-              onClick={handleGoogleLogin}
-              disabled={loading}
-              sx={{
-                py: 1.5,
-                borderColor: '#dadce0',
-                color: '#3c4043',
-                textTransform: 'none',
-                fontSize: '1rem',
-                fontWeight: 500,
-                '&:hover': {
-                  borderColor: '#4285F4',
-                  background: 'rgba(66, 133, 244, 0.04)',
-                },
-              }}
-            >
-              Continue with Google
-            </Button>
-          </motion.div>
+          {/* Right Panel - Form */}
+          <Grid item xs={12} md={7} sx={{ 
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(20px)',
+            p: { xs: 3, md: 5 }
+          }}>
+             <Box sx={{ maxWidth: 400, mx: 'auto' }}>
+              <Box sx={{ textAlign: 'center', mb: 3, display: { md: 'none' } }}>
+                <Typography variant="h4" fontWeight="bold" color="primary">SAJAG</Typography>
+              </Box>
 
-          <Divider sx={{ my: 3 }}>
-            <Typography variant="caption" color="text.secondary">
-              or use email
-            </Typography>
-          </Divider>
-
-          <Tabs 
-            value={tab} 
-            onChange={handleTabChange} 
-            variant="fullWidth"
-            sx={{ mb: 2 }}
-          >
-            <Tab label="Sign In" />
-            <Tab label="Sign Up" />
-          </Tabs>
-
-          <AnimatePresence mode="wait">
-            <motion.form
-              key={tab}
-              initial={{ opacity: 0, x: tab === 0 ? -20 : 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: tab === 0 ? 20 : -20 }}
-              transition={{ duration: 0.2 }}
-              onSubmit={handleEmailSubmit}
-            >
-              {tab === 1 && (
-                <TextField
-                  fullWidth
-                  name="name"
-                  label="Full Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  margin="normal"
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PersonIcon color="action" />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-
-              <TextField
-                fullWidth
-                name="email"
-                label="Email Address"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                margin="normal"
-                required
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <EmailIcon color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <TextField
-                fullWidth
-                name="password"
-                label="Password"
-                type={showPassword ? 'text' : 'password'}
-                value={formData.password}
-                onChange={handleChange}
-                margin="normal"
-                required
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon color="action" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+              <Tabs
+                value={tab}
+                onChange={handleTabChange}
+                variant="fullWidth"
+                sx={{ mb: 4, borderBottom: 1, borderColor: 'divider' }}
+              >
+                <Tab label="Login" sx={{ fontWeight: 600 }} />
+                <Tab label="Register" sx={{ fontWeight: 600 }} />
+              </Tabs>
 
               {authError && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <Alert severity="error" sx={{ mt: 2 }}>
-                    {authError}
-                  </Alert>
+                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+                  <Alert severity="error" sx={{ mb: 3 }}>{authError}</Alert>
                 </motion.div>
               )}
 
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                size="large"
-                disabled={loading}
-                sx={{
-                  mt: 3,
-                  py: 1.5,
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  textTransform: 'none',
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
-                  '&:hover': {
-                    boxShadow: '0 6px 20px rgba(102, 126, 234, 0.6)',
-                  },
-                }}
-              >
-                {loading ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : tab === 0 ? (
-                  'Sign In'
-                ) : (
-                  'Create Account'
-                )}
-              </Button>
-            </motion.form>
-          </AnimatePresence>
+              <form onSubmit={handleSubmit}>
+                <AnimatePresence mode="wait">
+                  {tab === 0 ? (
+                    <motion.div
+                      key="login"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <TextField
+                        fullWidth
+                        label="Email Address"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        margin="normal"
+                        required
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <EmailIcon color="action" />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      <TextField
+                        fullWidth
+                        label="Password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={formData.password}
+                        onChange={handleChange}
+                        margin="normal"
+                        required
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <LockIcon color="action" />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      <Button
+                        fullWidth
+                        type="submit"
+                        variant="contained"
+                        size="large"
+                        disabled={loading}
+                        sx={{ mt: 3, mb: 2, height: 48, borderRadius: 2 }}
+                      >
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+                      </Button>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="register"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <TextField
+                        fullWidth
+                        label="Full Name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        margin="normal"
+                        required
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <PersonIcon color="action" />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      <TextField
+                        fullWidth
+                        select
+                        label="State / Union Territory"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        margin="normal"
+                        required
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <LocationOn color="action" />
+                            </InputAdornment>
+                          ),
+                        }}
+                      >
+                        {INDIAN_STATES_AND_UTS.map((state) => (
+                          <MenuItem key={state} value={state}>
+                            {state}
+                          </MenuItem>
+                        ))}
+                      </TextField>
 
-          <Box sx={{ mt: 3, textAlign: 'center' }}>
+                      <TextField
+                        fullWidth
+                        label="Email Address"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        margin="normal"
+                        required
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <EmailIcon color="action" />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      <TextField
+                        fullWidth
+                        label="Password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={formData.password}
+                        onChange={handleChange}
+                        margin="normal"
+                        required
+                        helperText="Min. 6 characters"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <LockIcon color="action" />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      <Button
+                        fullWidth
+                        type="submit"
+                        variant="contained"
+                        size="large"
+                        disabled={loading}
+                        sx={{ mt: 3, mb: 2, height: 48, borderRadius: 2 }}
+                      >
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Register'}
+                      </Button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </form>
+
               <Divider sx={{ my: 2 }}>
                 <Typography variant="caption" color="text.secondary">
                   Quick Access
@@ -383,24 +380,23 @@ const LoginScreen = () => {
 
               <Button
                 fullWidth
-                variant="contained"
+                variant="outlined"
                 color="success"
-                size="large"
                 onClick={handleDemoLogin}
                 startIcon={<Login />}
+                disabled={loading}
                 sx={{
-                  py: 1.5,
-                  fontWeight: 'bold',
-                  background: 'linear-gradient(45deg, #2ecc71, #27ae60)',
-                  '&:hover': {
-                    background: 'linear-gradient(45deg, #27ae60, #229954)',
-                  },
+                  py: 1,
+                  borderWidth: 2,
+                  fontWeight: 600,
+                  '&:hover': { borderWidth: 2, background: 'rgba(46, 204, 113, 0.1)' }
                 }}
               >
-                Demo Login (Admin Access)
+                Demo Login (Admin)
               </Button>
-            </Box>
-        </Paper>
+             </Box>
+          </Grid>
+        </Grid>
       </motion.div>
     </Box>
   );

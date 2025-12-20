@@ -15,6 +15,7 @@ model User {
   password     String
   organization String
   role         String   @default("Official")
+  state        String?
   createdAt    DateTime @default(now())
 
   programs TrainingProgram[]

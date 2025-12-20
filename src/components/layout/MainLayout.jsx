@@ -10,31 +10,28 @@ const MainLayout = ({ children }) => {
   const drawerWidth = 260;
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <AppHeader />
-      <Sidebar />
+    <Box sx={{ display: 'flex', minHeight: '100vh', overflow: 'hidden' }}>
+      <AppHeader drawerWidth={drawerWidth} />
+      
+      <Sidebar drawerWidth={drawerWidth} />
       
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { 
-            xs: '100%',
-            sm: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : '100%' 
-          },
-          ml: { 
-            xs: 0,
-            sm: sidebarOpen ? `${drawerWidth}px` : 0 
-          },
+          width: '100%', // Allow flex item to shrink/grow
+          minHeight: '100vh',
+          backgroundColor: 'background.default',
           transition: (theme) =>
             theme.transitions.create(['margin', 'width'], {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.leavingScreen,
             }),
-          backgroundColor: 'background.default',
-          minHeight: '100vh',
-          overflow: 'hidden', // Prevent horizontal scroll
+          // In persistent mode, the drawer is in-flow if we don't absolute position it.
+          // However, MUI Drawer variant="persistent" usually doesn't affect sibling layout automatically unless handled.
+          // We will use the 'Sidebar' component's width transition effectively.
+          // Since Sidebar handles its own width (0 or 260px), this Box will just fill the rest.
         }}
       >
         <Toolbar />

@@ -1,20 +1,15 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const morgan = require('morgan'); // request logger
+const morgan = require('morgan');
 
-// Load env variables
 dotenv.config();
 
-// Initialize DB (includes retry logic)
 require('./config/db');
 
 const app = express();
 
-// ---------- Logging Middleware ----------
-// Morgan for concise HTTP logs
 app.use(morgan('combined'));
-// Custom logger for request details (body, headers) – verbose mode
 app.use((req, res, next) => {
   const start = Date.now();
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
@@ -22,7 +17,6 @@ app.use((req, res, next) => {
   if (Object.keys(req.body || {}).length) {
     console.log('Body:', JSON.stringify(req.body, null, 2));
   }
-  // Capture response details
   const originalSend = res.send.bind(res);
   res.send = (body) => {
     const duration = Date.now() - start;
@@ -33,7 +27,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// ---------- CORS Configuration ----------
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,
@@ -41,19 +34,16 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200,
 }));
-// Handle preflight requests for all routes
 app.options('*', cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ---------- Routes ----------
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/programs', require('./routes/programRoutes'));
 app.use('/api/partners', require('./routes/partnerRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 
-// Root endpoint
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -91,7 +81,6 @@ app.get('/api', (req, res) => {
   });
 });
 
-// ---------- Error handling ----------
 app.use((err, req, res, next) => {
   console.error(`[${new Date().toISOString()}] Error stack:`, err.stack);
   res.status(err.statusCode || 500).json({
@@ -100,7 +89,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -108,7 +96,6 @@ app.use((req, res) => {
   });
 });
 
-// Global error handling for unhandled promise rejections and uncaught exceptions
 process.on('unhandledRejection', (reason, promise) => {
   console.error(`[${new Date().toISOString()}] Unhandled Rejection at:`, promise, 'reason:', reason);
 });

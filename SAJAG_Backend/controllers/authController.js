@@ -10,7 +10,7 @@ const register = async (req, res) => {
       return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { name, email, password, organization, role } = req.body;
+    const { name, email, password, organization, role, state } = req.body;
 
     const existingUser = await prisma.user.findUnique({
       where: { email: email.toLowerCase() },
@@ -31,13 +31,14 @@ const register = async (req, res) => {
         name,
         email: email.toLowerCase(),
         password: hashedPassword,
-        organization,
+        organization: organization || 'NDMA',
         role: role || 'Official',
+        state: state || null,
       },
     });
 
     const token = jwt.sign(
-      { id: user.id, role: user.role },
+      { id: user.id, role: user.role, state: user.state },
       process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
@@ -51,6 +52,7 @@ const register = async (req, res) => {
         email: user.email,
         organization: user.organization,
         role: user.role,
+        state: user.state,
       },
     });
   } catch (error) {
