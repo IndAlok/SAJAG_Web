@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 
-// Modern Light theme with enhanced colors and high contrast text
+// Modern Light theme with enhanced colors
 export const lightTheme = createTheme({
   palette: {
     mode: 'light',
@@ -17,52 +17,205 @@ export const lightTheme = createTheme({
       contrastText: '#ffffff',
     },
     success: {
-      main: '#059669', // Darker green for better contrast on light bg
+      main: '#10b981', // Modern green
       light: '#34d399',
-      dark: '#047857',
+      dark: '#059669',
       contrastText: '#ffffff',
     },
     warning: {
-      main: '#d97706', // Darker amber
+      main: '#f59e0b', // Modern amber
       light: '#fbbf24',
-      dark: '#b45309',
+      dark: '#d97706',
       contrastText: '#ffffff',
     },
     error: {
-      main: '#dc2626', // Darker red
+      main: '#ef4444', // Modern red
       light: '#f87171',
-      dark: '#b91c1c',
+      dark: '#dc2626',
       contrastText: '#ffffff',
     },
     info: {
-      main: '#0891b2', // Darker cyan
+      main: '#06b6d4', // Modern cyan
       light: '#22d3ee',
-      dark: '#0e7490',
+      dark: '#0891b2',
       contrastText: '#ffffff',
     },
     background: {
-      default: '#f1f5f9', // Slate 100 - slightly darker than white for depth
-      paper: '#ffffff',   // Pure white for cards
+      default: '#f8fafc', // Subtle gray
+      paper: '#ffffff',
     },
     text: {
-      primary: '#0f172a', // Slate 900 - Almost Black
-      secondary: '#334155', // Slate 700 - Dark Gray (was 500)
+      primary: '#0f172a', // Slate 900
+      secondary: '#64748b', // Slate 500
     },
-    divider: 'rgba(0, 0, 0, 0.12)',
+    divider: 'rgba(0, 0, 0, 0.08)',
   },
-// ...
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: {
+      fontSize: '2.5rem',
+      fontWeight: 700,
+      letterSpacing: '-0.02em',
+    },
+    h2: {
+      fontSize: '2rem',
+      fontWeight: 700,
+      letterSpacing: '-0.01em',
+    },
+    h3: {
+      fontSize: '1.75rem',
+      fontWeight: 600,
+      letterSpacing: '-0.01em',
+    },
+    h4: {
+      fontSize: '1.5rem',
+      fontWeight: 600,
+      letterSpacing: '-0.01em',
+    },
+    h5: {
+      fontSize: '1.25rem',
+      fontWeight: 600,
+    },
+    h6: {
+      fontSize: '1rem',
+      fontWeight: 600,
+    },
+    body1: {
+      fontSize: '1rem',
+      lineHeight: 1.6,
+    },
+    body2: {
+      fontSize: '0.875rem',
+      lineHeight: 1.5,
+    },
+    button: {
+      textTransform: 'none',
+      fontWeight: 600,
+    },
+  },
+  shape: {
+    borderRadius: 12,
+  },
+  shadows: [
+    'none',
+    '0px 1px 2px rgba(0, 0, 0, 0.05)',
+    '0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)',
+    '0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06)',
+    '0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    '0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    '0px 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    '0px 14px 28px rgba(0, 0, 0, 0.12)',
+    '0px 16px 32px rgba(0, 0, 0, 0.14)',
+    '0px 18px 36px rgba(0, 0, 0, 0.16)',
+    '0px 20px 40px rgba(0, 0, 0, 0.18)',
+    '0px 22px 44px rgba(0, 0, 0, 0.2)',
+    '0px 24px 48px rgba(0, 0, 0, 0.22)',
+    '0px 26px 52px rgba(0, 0, 0, 0.24)',
+    '0px 28px 56px rgba(0, 0, 0, 0.26)',
+    '0px 30px 60px rgba(0, 0, 0, 0.28)',
+    '0px 32px 64px rgba(0, 0, 0, 0.3)',
+    '0px 34px 68px rgba(0, 0, 0, 0.32)',
+    '0px 36px 72px rgba(0, 0, 0, 0.34)',
+    '0px 38px 76px rgba(0, 0, 0, 0.36)',
+    '0px 40px 80px rgba(0, 0, 0, 0.38)',
+    '0px 42px 84px rgba(0, 0, 0, 0.4)',
+    '0px 44px 88px rgba(0, 0, 0, 0.42)',
+    '0px 46px 92px rgba(0, 0, 0, 0.44)',
+    '0px 48px 96px rgba(0, 0, 0, 0.46)',
+  ],
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          padding: '8px 16px',
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.15)',
+            transform: 'translateY(-1px)',
+            transition: 'all 0.2s ease-in-out',
+          },
+        },
+        contained: {
+          '&:hover': {
+            boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.2)',
+          },
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+          boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)',
+          transition: 'box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out',
+          '&:hover': {
+            boxShadow: '0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            transform: 'translateY(-2px)',
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: 'none',
+        },
+        rounded: {
+          borderRadius: 12,
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          fontWeight: 500,
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiInputLabel-root': {
+            color: '#64748b', // Slate 500
+          },
+          '& .MuiOutlinedInput-root': {
+            '& input': {
+              color: '#0f172a', // Slate 900
+            },
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: '#64748b', // Slate 500
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        select: {
+          color: '#0f172a', // Slate 900
+        },
+      },
+    },
+  },
+});
+
 // Modern Dark theme with proper contrast
 export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#3b82f6', // Bright blue
+      main: '#3b82f6', // Bright blue for dark mode
       light: '#60a5fa',
       dark: '#2563eb',
       contrastText: '#ffffff',
     },
     secondary: {
-      main: '#8b5cf6', // Bright purple
+      main: '#8b5cf6', // Bright purple for dark mode
       light: '#a78bfa',
       dark: '#7c3aed',
       contrastText: '#ffffff',
@@ -80,9 +233,15 @@ export const darkTheme = createTheme({
       contrastText: '#000000',
     },
     error: {
-      main: '#ef4444', // Bright red
-      light: '#f87171',
-      dark: '#b91c1c',
+      main: '#f87171', // Bright red
+      light: '#fca5a5',
+      dark: '#ef4444',
+      contrastText: '#ffffff',
+    },
+    info: {
+      main: '#06b6d4', // Bright cyan
+      light: '#22d3ee',
+      dark: '#0891b2',
       contrastText: '#ffffff',
     },
     background: {
@@ -90,7 +249,7 @@ export const darkTheme = createTheme({
       paper: '#1e293b', // Slate 800
     },
     text: {
-      primary: '#f8fafc', // Slate 50 - Almost White
+      primary: '#f1f5f9', // Slate 100
       secondary: '#cbd5e1', // Slate 300
     },
     divider: 'rgba(255, 255, 255, 0.12)',

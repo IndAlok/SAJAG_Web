@@ -1,109 +1,198 @@
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Paper,
   Typography,
   TextField,
   Button,
-  Tabs,
-  Tab,
-  InputAdornment,
-  MenuItem,
+  Divider,
+  Alert,
   CircularProgress,
   IconButton,
-  Alert,
-  Divider,
-  useTheme,
-  Grid
+  InputAdornment,
+  Tabs,
+  Tab,
 } from '@mui/material';
 import {
   Visibility,
   VisibilityOff,
+  Google as GoogleIcon,
   Email as EmailIcon,
   Person as PersonIcon,
   Lock as LockIcon,
   Login,
-  LocationOn,
+  Shield,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  loginUser, 
-  registerUser, 
+  loginWithGoogle, 
+  loginWithEmail, 
+  signUpWithEmail,
   setFirebaseUser,
-  clearError, 
-  selectAuthLoading, 
+  selectAuthLoading,
   selectAuthError,
-  selectIsAuthenticated
-} from '../../features/auth/authSlice';
-import ParticleBackground from '../../components/common/ParticleBackground';
-import { INDIAN_STATES_AND_UTS } from '../../utils/constants';
+  clearError,
+} from './authSlice';
+
+const ParticleBackground = () => {
+  const canvasRef = useRef(null);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const particlesRef = useRef([]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationId;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const createParticles = () => {
+      particlesRef.current = [];
+      for (let i = 0; i < 80; i++) {
+        particlesRef.current.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 2 + 1,
+          opacity: Math.random() * 0.5 + 0.2,
+        });
+      }
+    };
+    createParticles();
+
+    const handleMouseMove = (e) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
+    const animate = () => {
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      particlesRef.current.forEach((p, i) => {
+        const dx = mouseRef.current.x - p.x;
+        const dy = mouseRef.current.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 150) {
+          const force = (150 - dist) / 150;
+          p.vx += (dx / dist) * force * 0.02;
+          p.vy += (dy / dist) * force * 0.02;
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.99;
+        p.vy *= 0.99;
+
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(99, 102, 241, ${p.opacity})`;
+        ctx.fill();
+
+        particlesRef.current.forEach((p2, j) => {
+          if (i !== j) {
+            const dx2 = p.x - p2.x;
+            const dy2 = p.y - p2.y;
+            const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+            if (dist2 < 100) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = `rgba(99, 102, 241, ${0.1 * (1 - dist2 / 100)})`;
+              ctx.stroke();
+            }
+          }
+        });
+      });
+
+      animationId = requestAnimationFrame(animate);
+    };
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', handleMouseMove);
+      cancelAnimationFrame(animationId);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }}
+    />
+  );
+};
 
 const LoginScreen = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const theme = useTheme();
   const loading = useSelector(selectAuthLoading);
   const authError = useSelector(selectAuthError);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
   
   const [tab, setTab] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
-    state: '', // New state field
-  });
+  const [formData, setFormData] = useState({ email: '', password: '', name: '' });
 
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, navigate]);
-
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (_, newValue) => {
     setTab(newValue);
     dispatch(clearError());
-    setFormData({ email: '', password: '', name: '', state: '' });
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (authError) dispatch(clearError());
+    dispatch(clearError());
   };
 
-  const handleSubmit = (e) => {
+  const handleGoogleLogin = async () => {
+    try {
+      await dispatch(loginWithGoogle()).unwrap();
+      navigate('/dashboard');
+    } catch (_) {}
+  };
+
+  const handleEmailSubmit = async (e) => {
     e.preventDefault();
-    if (tab === 0) {
-      dispatch(loginUser({ email: formData.email, password: formData.password }))
-        .unwrap()
-        .then(() => navigate('/dashboard'))
-        .catch((err) => console.error('Login failed:', err));
-    } else {
-      dispatch(registerUser({ 
-        name: formData.name, 
-        email: formData.email, 
-        password: formData.password,
-        state: formData.state || 'Delhi' // Default to Delhi if not selected (or handle validation)
-      }))
-        .unwrap()
-        .then(() => navigate('/dashboard'))
-        .catch((err) => console.error('Registration failed:', err));
-    }
+    if (!formData.email || !formData.password) return;
+    try {
+      if (tab === 0) {
+        await dispatch(loginWithEmail({ email: formData.email, password: formData.password })).unwrap();
+      } else {
+        await dispatch(signUpWithEmail({ email: formData.email, password: formData.password, name: formData.name })).unwrap();
+      }
+      navigate('/dashboard');
+    } catch (_) {}
   };
 
   const handleDemoLogin = () => {
-    // Instant demo login - no backend call needed
     const demoUser = {
       id: 'demo-admin',
       name: 'NDMA Admin',
       email: 'admin@ndma.gov.in',
       organization: 'National Disaster Management Authority',
       role: 'Admin',
-      state: null, // Admin sees all
     };
     const demoToken = 'demo-session-' + Date.now();
     localStorage.setItem('sajag_token', demoToken);
@@ -114,289 +203,64 @@ const LoginScreen = () => {
   };
 
   return (
-    <Box
-      sx={{
-        width: '100vw',
-        height: '100vh',
-        overflow: 'hidden',
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', // Fallback
-      }}
-    >
+    <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)', overflow: 'hidden', position: 'relative' }}>
       <ParticleBackground />
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
-        style={{ zIndex: 10, width: '100%', maxWidth: '1000px', padding: '20px' }}
-      >
-        <Grid container spacing={0} sx={{ borderRadius: 4, overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
-          {/* Left Panel - Branding */}
-          <Grid item xs={12} md={5} sx={{ 
-            background: 'rgba(30, 41, 59, 0.8)',
-            backdropFilter: 'blur(20px)',
-            p: 4,
-            display: { xs: 'none', md: 'flex' },
-            flexDirection: 'column',
-            justifyContent: 'center',
-            color: 'white',
-            borderRight: '1px solid rgba(255, 255, 255, 0.1)'
-          }}>
-            <motion.div
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Box 
-                  component="img" 
-                  src="/sajag_logo.png" 
-                  alt="SAJAG Logo"
-                  sx={{ width: 60, height: 60, mr: 2 }}
-                  onError={(e) => { e.target.style.display = 'none' }} // Fallback if image missing
-                />
-                <Typography variant="h3" fontWeight="bold" sx={{ background: 'linear-gradient(45deg, #3b82f6, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  SAJAG
-                </Typography>
-              </Box>
-              <Typography variant="h5" fontWeight="600" gutterBottom>
-                Disaster Training Platform
-              </Typography>
-              <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 4 }}>
-                Empowering India with preparedness. Advanced analytics, real-time monitoring, and comprehensive training management.
-              </Typography>
-              
-              <Box sx={{ mt: 'auto' }}>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
-                  © 2024 NDMA. All rights reserved.
-                </Typography>
+      
+      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
+        <Paper elevation={24} sx={{ p: 3, width: { xs: 340, sm: 400 }, maxHeight: '90vh', overflow: 'auto', borderRadius: 4, background: 'rgba(30, 41, 59, 0.95)', backdropFilter: 'blur(20px)', border: '1px solid rgba(99, 102, 241, 0.2)', zIndex: 1, position: 'relative' }}>
+          
+          <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <motion.div initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 200 }}>
+              <Box sx={{ width: 64, height: 64, borderRadius: 2, background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', mx: 'auto', mb: 1.5, boxShadow: '0 8px 32px rgba(99, 102, 241, 0.4)' }}>
+                <Shield sx={{ fontSize: 36, color: '#fff' }} />
               </Box>
             </motion.div>
-          </Grid>
+            <Typography variant="h5" fontWeight="bold" sx={{ color: '#f1f5f9' }}>SAJAG</Typography>
+            <Typography variant="caption" sx={{ color: '#94a3b8', display: 'block' }}>NDMA Training Management Platform</Typography>
+          </Box>
 
-          {/* Right Panel - Form */}
-          <Grid item xs={12} md={7} sx={{ 
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(20px)',
-            p: { xs: 3, md: 5 }
-          }}>
-             <Box sx={{ maxWidth: 400, mx: 'auto' }}>
-              <Box sx={{ textAlign: 'center', mb: 3, display: { md: 'none' } }}>
-                <Typography variant="h4" fontWeight="bold" color="primary">SAJAG</Typography>
-              </Box>
+          <Button fullWidth variant="contained" size="large" onClick={handleDemoLogin} startIcon={<Login />} sx={{ py: 1.2, mb: 2, fontWeight: 600, fontSize: '0.95rem', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', '&:hover': { background: 'linear-gradient(135deg, #059669 0%, #047857 100%)' } }}>
+            Demo Login (Admin)
+          </Button>
 
-              <Tabs
-                value={tab}
-                onChange={handleTabChange}
-                variant="fullWidth"
-                sx={{ mb: 4, borderBottom: 1, borderColor: 'divider' }}
-              >
-                <Tab label="Login" sx={{ fontWeight: 600 }} />
-                <Tab label="Register" sx={{ fontWeight: 600 }} />
-              </Tabs>
+          <Divider sx={{ my: 1.5, '&::before, &::after': { borderColor: 'rgba(148, 163, 184, 0.2)' } }}>
+            <Typography variant="caption" sx={{ color: '#94a3b8' }}>or</Typography>
+          </Divider>
+
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button fullWidth variant="outlined" size="large" startIcon={<GoogleIcon sx={{ color: '#4285F4' }} />} onClick={handleGoogleLogin} disabled={loading} sx={{ py: 1, mb: 1.5, borderColor: 'rgba(148, 163, 184, 0.3)', color: '#e2e8f0', '&:hover': { borderColor: '#4285F4', background: 'rgba(66, 133, 244, 0.1)' } }}>
+              Continue with Google
+            </Button>
+          </motion.div>
+
+          <Tabs value={tab} onChange={handleTabChange} variant="fullWidth" sx={{ mb: 1, minHeight: 36, '& .MuiTab-root': { minHeight: 36, py: 0.5, color: '#94a3b8', '&.Mui-selected': { color: '#6366f1' } }, '& .MuiTabs-indicator': { backgroundColor: '#6366f1' } }}>
+            <Tab label="Sign In" />
+            <Tab label="Sign Up" />
+          </Tabs>
+
+          <AnimatePresence mode="wait">
+            <motion.form key={tab} initial={{ opacity: 0, x: tab === 0 ? -20 : 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: tab === 0 ? 20 : -20 }} transition={{ duration: 0.2 }} onSubmit={handleEmailSubmit}>
+              {tab === 1 && (
+                <TextField fullWidth name="name" label="Full Name" value={formData.name} onChange={handleChange} size="small" margin="dense" InputProps={{ startAdornment: <InputAdornment position="start"><PersonIcon sx={{ color: '#64748b', fontSize: 20 }} /></InputAdornment> }} sx={{ '& .MuiOutlinedInput-root': { color: '#e2e8f0', '& fieldset': { borderColor: 'rgba(148, 163, 184, 0.3)' }, '&:hover fieldset': { borderColor: '#6366f1' }, '&.Mui-focused fieldset': { borderColor: '#6366f1' } }, '& .MuiInputLabel-root': { color: '#94a3b8' } }} />
+              )}
+
+              <TextField fullWidth name="email" label="Email" type="email" value={formData.email} onChange={handleChange} size="small" margin="dense" required InputProps={{ startAdornment: <InputAdornment position="start"><EmailIcon sx={{ color: '#64748b', fontSize: 20 }} /></InputAdornment> }} sx={{ '& .MuiOutlinedInput-root': { color: '#e2e8f0', '& fieldset': { borderColor: 'rgba(148, 163, 184, 0.3)' }, '&:hover fieldset': { borderColor: '#6366f1' }, '&.Mui-focused fieldset': { borderColor: '#6366f1' } }, '& .MuiInputLabel-root': { color: '#94a3b8' } }} />
+
+              <TextField fullWidth name="password" label="Password" type={showPassword ? 'text' : 'password'} value={formData.password} onChange={handleChange} size="small" margin="dense" required InputProps={{ startAdornment: <InputAdornment position="start"><LockIcon sx={{ color: '#64748b', fontSize: 20 }} /></InputAdornment>, endAdornment: <InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)} edge="end" size="small" sx={{ color: '#64748b' }}>{showPassword ? <VisibilityOff sx={{ fontSize: 20 }} /> : <Visibility sx={{ fontSize: 20 }} />}</IconButton></InputAdornment> }} sx={{ '& .MuiOutlinedInput-root': { color: '#e2e8f0', '& fieldset': { borderColor: 'rgba(148, 163, 184, 0.3)' }, '&:hover fieldset': { borderColor: '#6366f1' }, '&.Mui-focused fieldset': { borderColor: '#6366f1' } }, '& .MuiInputLabel-root': { color: '#94a3b8' } }} />
 
               {authError && (
-                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-                  <Alert severity="error" sx={{ mb: 3 }}>{authError}</Alert>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <Alert severity="error" sx={{ mt: 1, py: 0, fontSize: '0.8rem' }}>{authError}</Alert>
                 </motion.div>
               )}
 
-              <form onSubmit={handleSubmit}>
-                <AnimatePresence mode="wait">
-                  {tab === 0 ? (
-                    <motion.div
-                      key="login"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <TextField
-                        fullWidth
-                        label="Email Address"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        margin="normal"
-                        required
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <EmailIcon color="action" />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                      <TextField
-                        fullWidth
-                        label="Password"
-                        name="password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={formData.password}
-                        onChange={handleChange}
-                        margin="normal"
-                        required
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <LockIcon color="action" />
-                            </InputAdornment>
-                          ),
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                      <Button
-                        fullWidth
-                        type="submit"
-                        variant="contained"
-                        size="large"
-                        disabled={loading}
-                        sx={{ mt: 3, mb: 2, height: 48, borderRadius: 2 }}
-                      >
-                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
-                      </Button>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="register"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <TextField
-                        fullWidth
-                        label="Full Name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        margin="normal"
-                        required
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <PersonIcon color="action" />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                      <TextField
-                        fullWidth
-                        select
-                        label="State / Union Territory"
-                        name="state"
-                        value={formData.state}
-                        onChange={handleChange}
-                        margin="normal"
-                        required
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <LocationOn color="action" />
-                            </InputAdornment>
-                          ),
-                        }}
-                      >
-                        {INDIAN_STATES_AND_UTS.map((state) => (
-                          <MenuItem key={state} value={state}>
-                            {state}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-
-                      <TextField
-                        fullWidth
-                        label="Email Address"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        margin="normal"
-                        required
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <EmailIcon color="action" />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                      <TextField
-                        fullWidth
-                        label="Password"
-                        name="password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={formData.password}
-                        onChange={handleChange}
-                        margin="normal"
-                        required
-                        helperText="Min. 6 characters"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <LockIcon color="action" />
-                            </InputAdornment>
-                          ),
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                      <Button
-                        fullWidth
-                        type="submit"
-                        variant="contained"
-                        size="large"
-                        disabled={loading}
-                        sx={{ mt: 3, mb: 2, height: 48, borderRadius: 2 }}
-                      >
-                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Register'}
-                      </Button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </form>
-
-              <Divider sx={{ my: 2 }}>
-                <Typography variant="caption" color="text.secondary">
-                  Quick Access
-                </Typography>
-              </Divider>
-
-              <Button
-                fullWidth
-                variant="outlined"
-                color="success"
-                onClick={handleDemoLogin}
-                startIcon={<Login />}
-                disabled={loading}
-                sx={{
-                  py: 1,
-                  borderWidth: 2,
-                  fontWeight: 600,
-                  '&:hover': { borderWidth: 2, background: 'rgba(46, 204, 113, 0.1)' }
-                }}
-              >
-                Demo Login (Admin)
+              <Button type="submit" fullWidth variant="contained" size="large" disabled={loading} sx={{ mt: 2, py: 1.2, background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)', fontWeight: 600, '&:hover': { background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)' } }}>
+                {loading ? <CircularProgress size={22} color="inherit" /> : tab === 0 ? 'Sign In' : 'Create Account'}
               </Button>
-             </Box>
-          </Grid>
-        </Grid>
+            </motion.form>
+          </AnimatePresence>
+
+        </Paper>
       </motion.div>
     </Box>
   );
