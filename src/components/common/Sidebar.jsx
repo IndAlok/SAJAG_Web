@@ -48,8 +48,9 @@ const Sidebar = () => {
       anchor="left"
       open={sidebarOpen}
       sx={{
-        width: DRAWER_WIDTH,
+        width: sidebarOpen ? DRAWER_WIDTH : 0,
         flexShrink: 0,
+        transition: 'width 0.3s ease',
         '& .MuiDrawer-paper': {
           width: DRAWER_WIDTH,
           boxSizing: 'border-box',
@@ -65,7 +66,6 @@ const Sidebar = () => {
       }}
     >
       <Toolbar />
-      
       <Box sx={{ overflow: 'auto', mt: 2 }}>
         <Box sx={{ px: 2, mb: 2 }}>
           <Typography variant="overline" color="text.secondary" fontWeight="bold" sx={{ letterSpacing: '0.15em' }}>
@@ -118,7 +118,7 @@ const Sidebar = () => {
 
         <Box sx={{ px: 3, py: 2, mx: 1, borderRadius: 2, background: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)' }}>
           <Typography variant="caption" color="text.secondary" display="block" fontWeight={600}>
-            {language === 'hi' ? 'संस्करण' : 'Version'}: 2.0.0
+            Version: 2.0.0
           </Typography>
           <Typography variant="caption" color="text.secondary" display="block">
             NDMA Training Platform

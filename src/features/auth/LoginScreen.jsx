@@ -38,7 +38,8 @@ import {
 
 const ParticleBackground = () => {
   const canvasRef = useRef(null);
-  const mouseRef = useRef({ x: 0, y: 0 });
+  const mouseRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+  const clickRef = useRef(false);
   const particlesRef = useRef([]);
 
   useEffect(() => {
@@ -55,14 +56,15 @@ const ParticleBackground = () => {
 
     const createParticles = () => {
       particlesRef.current = [];
-      for (let i = 0; i < 80; i++) {
+      for (let i = 0; i < 100; i++) {
         particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.5,
-          vy: (Math.random() - 0.5) * 0.5,
-          size: Math.random() * 2 + 1,
-          opacity: Math.random() * 0.5 + 0.2,
+          vx: 0,
+          vy: 0,
+          size: Math.random() * 3 + 1,
+          baseOpacity: Math.random() * 0.6 + 0.3,
+          opacity: Math.random() * 0.6 + 0.3,
         });
       }
     };
@@ -71,10 +73,17 @@ const ParticleBackground = () => {
     const handleMouseMove = (e) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
     };
+
+    const handleClick = () => {
+      clickRef.current = true;
+      setTimeout(() => { clickRef.current = false; }, 300);
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('click', handleClick);
 
     const animate = () => {
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.1)';
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.15)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particlesRef.current.forEach((p, i) => {
@@ -82,37 +91,44 @@ const ParticleBackground = () => {
         const dy = mouseRef.current.y - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 150) {
-          const force = (150 - dist) / 150;
-          p.vx += (dx / dist) * force * 0.02;
-          p.vy += (dy / dist) * force * 0.02;
+        if (clickRef.current && dist < 200) {
+          const angle = Math.atan2(dy, dx);
+          const force = (200 - dist) / 10;
+          p.vx -= Math.cos(angle) * force;
+          p.vy -= Math.sin(angle) * force;
+        } else if (dist < 300) {
+          const force = (300 - dist) / 5000;
+          p.vx += dx * force;
+          p.vy += dy * force;
         }
 
         p.x += p.vx;
         p.y += p.vy;
-        p.vx *= 0.99;
-        p.vy *= 0.99;
+        p.vx *= 0.95;
+        p.vy *= 0.95;
 
         if (p.x < 0) p.x = canvas.width;
         if (p.x > canvas.width) p.x = 0;
         if (p.y < 0) p.y = canvas.height;
         if (p.y > canvas.height) p.y = 0;
 
+        const glow = dist < 150 ? 1.5 : 1;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(99, 102, 241, ${p.opacity})`;
+        ctx.arc(p.x, p.y, p.size * glow, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(99, 102, 241, ${p.baseOpacity * (dist < 150 ? 1.3 : 1)})`;
         ctx.fill();
 
         particlesRef.current.forEach((p2, j) => {
-          if (i !== j) {
+          if (i < j) {
             const dx2 = p.x - p2.x;
             const dy2 = p.y - p2.y;
             const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-            if (dist2 < 100) {
+            if (dist2 < 120) {
               ctx.beginPath();
               ctx.moveTo(p.x, p.y);
               ctx.lineTo(p2.x, p2.y);
-              ctx.strokeStyle = `rgba(99, 102, 241, ${0.1 * (1 - dist2 / 100)})`;
+              ctx.strokeStyle = `rgba(99, 102, 241, ${0.15 * (1 - dist2 / 120)})`;
+              ctx.lineWidth = 0.5;
               ctx.stroke();
             }
           }
@@ -126,6 +142,7 @@ const ParticleBackground = () => {
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('click', handleClick);
       cancelAnimationFrame(animationId);
     };
   }, []);
