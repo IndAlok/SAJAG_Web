@@ -48,9 +48,6 @@ const Sidebar = () => {
       anchor="left"
       open={sidebarOpen}
       sx={{
-        width: sidebarOpen ? DRAWER_WIDTH : 0,
-        flexShrink: 0,
-        transition: 'width 0.3s ease',
         '& .MuiDrawer-paper': {
           width: DRAWER_WIDTH,
           boxSizing: 'border-box',

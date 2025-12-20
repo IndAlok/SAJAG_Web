@@ -38,8 +38,8 @@ import {
 
 const ParticleBackground = () => {
   const canvasRef = useRef(null);
-  const mouseRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-  const clickRef = useRef(false);
+  const mouseRef = useRef({ x: -1000, y: -1000 });
+  const clickTimeRef = useRef(0);
   const particlesRef = useRef([]);
 
   useEffect(() => {
@@ -56,15 +56,16 @@ const ParticleBackground = () => {
 
     const createParticles = () => {
       particlesRef.current = [];
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 80; i++) {
         particlesRef.current.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
+          baseX: Math.random() * canvas.width,
+          baseY: Math.random() * canvas.height,
           vx: 0,
           vy: 0,
-          size: Math.random() * 3 + 1,
-          baseOpacity: Math.random() * 0.6 + 0.3,
-          opacity: Math.random() * 0.6 + 0.3,
+          size: Math.random() * 2.5 + 1,
+          opacity: Math.random() * 0.4 + 0.2,
         });
       }
     };
@@ -75,47 +76,49 @@ const ParticleBackground = () => {
     };
 
     const handleClick = () => {
-      clickRef.current = true;
-      setTimeout(() => { clickRef.current = false; }, 300);
+      clickTimeRef.current = Date.now();
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('click', handleClick);
 
     const animate = () => {
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.15)';
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const timeSinceClick = Date.now() - clickTimeRef.current;
+      const isExploding = timeSinceClick < 600;
+      const explodeStrength = isExploding ? Math.max(0, 1 - timeSinceClick / 600) : 0;
 
       particlesRef.current.forEach((p, i) => {
         const dx = mouseRef.current.x - p.x;
         const dy = mouseRef.current.y - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (clickRef.current && dist < 200) {
+        if (isExploding && dist < 250) {
           const angle = Math.atan2(dy, dx);
-          const force = (200 - dist) / 10;
+          const force = (250 - dist) * 0.08 * explodeStrength;
           p.vx -= Math.cos(angle) * force;
           p.vy -= Math.sin(angle) * force;
-        } else if (dist < 300) {
-          const force = (300 - dist) / 5000;
-          p.vx += dx * force;
-          p.vy += dy * force;
+        } else if (dist < 180 && dist > 20) {
+          const pullStrength = 0.0008 * (180 - dist);
+          p.vx += dx * pullStrength;
+          p.vy += dy * pullStrength;
         }
+
+        const returnStrength = 0.003;
+        p.vx += (p.baseX - p.x) * returnStrength;
+        p.vy += (p.baseY - p.y) * returnStrength;
 
         p.x += p.vx;
         p.y += p.vy;
-        p.vx *= 0.95;
-        p.vy *= 0.95;
+        p.vx *= 0.97;
+        p.vy *= 0.97;
 
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
-
-        const glow = dist < 150 ? 1.5 : 1;
+        const glowFactor = dist < 150 ? 1 + (150 - dist) / 300 : 1;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * glow, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(99, 102, 241, ${p.baseOpacity * (dist < 150 ? 1.3 : 1)})`;
+        ctx.arc(p.x, p.y, p.size * glowFactor, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(99, 102, 241, ${p.opacity * glowFactor})`;
         ctx.fill();
 
         particlesRef.current.forEach((p2, j) => {
@@ -123,12 +126,12 @@ const ParticleBackground = () => {
             const dx2 = p.x - p2.x;
             const dy2 = p.y - p2.y;
             const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-            if (dist2 < 120) {
+            if (dist2 < 100) {
               ctx.beginPath();
               ctx.moveTo(p.x, p.y);
               ctx.lineTo(p2.x, p2.y);
-              ctx.strokeStyle = `rgba(99, 102, 241, ${0.15 * (1 - dist2 / 120)})`;
-              ctx.lineWidth = 0.5;
+              ctx.strokeStyle = `rgba(99, 102, 241, ${0.12 * (1 - dist2 / 100)})`;
+              ctx.lineWidth = 0.6;
               ctx.stroke();
             }
           }
