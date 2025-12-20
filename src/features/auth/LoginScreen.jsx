@@ -87,33 +87,33 @@ const ParticleBackground = () => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       const timeSinceClick = Date.now() - clickTimeRef.current;
-      const isExploding = timeSinceClick < 600;
-      const explodeStrength = isExploding ? Math.max(0, 1 - timeSinceClick / 600) : 0;
+      const isExploding = timeSinceClick < 800;
+      const explodeStrength = isExploding ? Math.max(0, 1 - timeSinceClick / 800) : 0;
 
       particlesRef.current.forEach((p, i) => {
         const dx = mouseRef.current.x - p.x;
         const dy = mouseRef.current.y - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (isExploding && dist < 250) {
+        if (isExploding && dist < 300) {
           const angle = Math.atan2(dy, dx);
-          const force = (250 - dist) * 0.08 * explodeStrength;
+          const force = (300 - dist) * 0.03 * explodeStrength;
           p.vx -= Math.cos(angle) * force;
           p.vy -= Math.sin(angle) * force;
-        } else if (dist < 180 && dist > 20) {
-          const pullStrength = 0.0008 * (180 - dist);
+        } else if (dist < 250 && dist > 30) {
+          const pullStrength = 0.00015 * (250 - dist);
           p.vx += dx * pullStrength;
           p.vy += dy * pullStrength;
         }
 
-        const returnStrength = 0.003;
+        const returnStrength = 0.001;
         p.vx += (p.baseX - p.x) * returnStrength;
         p.vy += (p.baseY - p.y) * returnStrength;
 
         p.x += p.vx;
         p.y += p.vy;
-        p.vx *= 0.97;
-        p.vy *= 0.97;
+        p.vx *= 0.98;
+        p.vy *= 0.98;
 
         const glowFactor = dist < 150 ? 1 + (150 - dist) / 300 : 1;
         ctx.beginPath();

@@ -26,11 +26,14 @@ import {
   Edit,
   Delete,
 } from '@mui/icons-material';
-import { motion } from 'framer-motion';
 import { formatDate, getStatusColor } from '../../utils/formatters';
 
 const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit, onDelete }) => {
   if (!training) return null;
+
+  const objectives = training.objectives || [];
+  const materialsProvided = training.materialsProvided || [];
+  const location = training.location || null;
 
   return (
     <Dialog 
@@ -67,13 +70,15 @@ const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit,
               size="small"
               color={getStatusColor(training.status)}
             />
-            <Chip
-              icon={<Star />}
-              label={`${training.feedbackScore} / 5.0`}
-              size="small"
-              color="warning"
-              variant="outlined"
-            />
+            {training.feedbackScore && (
+              <Chip
+                icon={<Star />}
+                label={`${training.feedbackScore} / 5.0`}
+                size="small"
+                color="warning"
+                variant="outlined"
+              />
+            )}
           </Box>
         </Box>
         <IconButton onClick={onClose} sx={{ mt: -1 }}>
@@ -83,7 +88,6 @@ const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit,
 
       <DialogContent dividers>
         <Grid container spacing={3}>
-          {/* Basic Information */}
           <Grid item xs={12}>
             <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
               Basic Information
@@ -98,7 +102,7 @@ const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit,
                   Theme
                 </Typography>
                 <Typography variant="body1" fontWeight="medium">
-                  {training.theme}
+                  {training.theme || 'N/A'}
                 </Typography>
               </Box>
             </Box>
@@ -112,11 +116,13 @@ const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit,
                   Partner Organization
                 </Typography>
                 <Typography variant="body1" fontWeight="medium">
-                  {training.partnerName}
+                  {training.partnerName || 'N/A'}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {training.partnerType}
-                </Typography>
+                {training.partnerType && (
+                  <Typography variant="caption" color="text.secondary">
+                    {training.partnerType}
+                  </Typography>
+                )}
               </Box>
             </Box>
           </Grid>
@@ -129,11 +135,13 @@ const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit,
                   Location
                 </Typography>
                 <Typography variant="body1" fontWeight="medium">
-                  {training.district}, {training.state}
+                  {training.district || 'N/A'}, {training.state || 'N/A'}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Lat: {training.location.lat.toFixed(4)}, Lon: {training.location.lon.toFixed(4)}
-                </Typography>
+                {location && (
+                  <Typography variant="caption" color="text.secondary">
+                    Lat: {location.lat?.toFixed(4) || 'N/A'}, Lon: {location.lon?.toFixed(4) || 'N/A'}
+                  </Typography>
+                )}
               </Box>
             </Box>
           </Grid>
@@ -146,7 +154,7 @@ const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit,
                   Participants
                 </Typography>
                 <Typography variant="h5" fontWeight="bold" color="success.main">
-                  {training.participants.toLocaleString()}
+                  {(training.participants || 0).toLocaleString()}
                 </Typography>
               </Box>
             </Box>
@@ -160,7 +168,7 @@ const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit,
                   Start Date
                 </Typography>
                 <Typography variant="body1" fontWeight="medium">
-                  {formatDate(training.startDate)}
+                  {training.startDate ? formatDate(training.startDate) : 'N/A'}
                 </Typography>
               </Box>
             </Box>
@@ -174,7 +182,7 @@ const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit,
                   End Date
                 </Typography>
                 <Typography variant="body1" fontWeight="medium">
-                  {formatDate(training.endDate)}
+                  {training.endDate ? formatDate(training.endDate) : 'N/A'}
                 </Typography>
               </Box>
             </Box>
@@ -182,64 +190,69 @@ const TrainingDetailsDialog = ({ open, onClose, training, hasFullAccess, onEdit,
 
           <Divider sx={{ width: '100%', my: 2 }} />
 
-          {/* Description */}
           <Grid item xs={12}>
             <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
               Description
             </Typography>
             <Typography variant="body2" color="text.secondary" paragraph>
-              {training.description}
+              {training.description || 'No description available.'}
             </Typography>
           </Grid>
 
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
-              Target Audience
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {training.targetAudience}
-            </Typography>
-          </Grid>
+          {training.targetAudience && (
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
+                Target Audience
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {training.targetAudience}
+              </Typography>
+            </Grid>
+          )}
 
-          <Divider sx={{ width: '100%', my: 2 }} />
+          {objectives.length > 0 && (
+            <>
+              <Divider sx={{ width: '100%', my: 2 }} />
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
+                  Training Objectives
+                </Typography>
+                <List dense>
+                  {objectives.map((objective, index) => (
+                    <ListItem key={index}>
+                      <CheckCircle sx={{ mr: 1, fontSize: 18 }} color="success" />
+                      <ListItemText 
+                        primary={objective}
+                        primaryTypographyProps={{ variant: 'body2' }}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Grid>
+            </>
+          )}
 
-          {/* Objectives */}
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
-              Training Objectives
-            </Typography>
-            <List dense>
-              {training.objectives.map((objective, index) => (
-                <ListItem key={index}>
-                  <CheckCircle sx={{ mr: 1, fontSize: 18 }} color="success" />
-                  <ListItemText 
-                    primary={objective}
-                    primaryTypographyProps={{ variant: 'body2' }}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Grid>
-
-          <Divider sx={{ width: '100%', my: 2 }} />
-
-          {/* Materials Provided */}
-          <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
-              Materials Provided
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-              {training.materialsProvided.map((material, index) => (
-                <Chip
-                  key={index}
-                  label={material}
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                />
-              ))}
-            </Box>
-          </Grid>
+          {materialsProvided.length > 0 && (
+            <>
+              <Divider sx={{ width: '100%', my: 2 }} />
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom fontWeight="bold" color="primary">
+                  Materials Provided
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  {materialsProvided.map((material, index) => (
+                    <Chip
+                      key={index}
+                      label={material}
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                    />
+                  ))}
+                </Box>
+              </Grid>
+            </>
+          )}
         </Grid>
       </DialogContent>
 
