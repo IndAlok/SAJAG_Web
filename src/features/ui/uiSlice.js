@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const getStoredTheme = () => {
   const stored = localStorage.getItem('sajag_theme_mode');
-  return stored || 'light';
+  return stored || 'dark';
 };
 
 const getStoredLanguage = () => {
@@ -11,9 +11,9 @@ const getStoredLanguage = () => {
 };
 
 const initialState = {
-  themeMode: getStoredTheme(), // 'light', 'dark', or 'high-contrast'
-  language: getStoredLanguage(), // 'en' or 'hi'
-  sidebarOpen: false, // Default closed for cleaner initial layout
+  themeMode: getStoredTheme(),
+  language: getStoredLanguage(),
+  sidebarOpen: false,
   loading: false,
 };
 
@@ -49,7 +49,6 @@ export const {
   setLoading,
 } = uiSlice.actions;
 
-// Selectors
 export const selectThemeMode = (state) => state.ui.themeMode;
 export const selectLanguage = (state) => state.ui.language;
 export const selectSidebarOpen = (state) => state.ui.sidebarOpen;

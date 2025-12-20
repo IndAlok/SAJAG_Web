@@ -13,7 +13,7 @@ const MainLayout = ({ children }) => {
   const location = useLocation();
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
       <AppHeader />
       <Sidebar />
       
@@ -22,10 +22,8 @@ const MainLayout = ({ children }) => {
         sx={{
           flexGrow: 1,
           p: { xs: 2, sm: 3 },
-          width: '100%',
-          ml: { xs: 0, sm: sidebarOpen ? `${DRAWER_WIDTH}px` : 0 },
-          transition: 'margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          backgroundColor: 'background.default',
+          ml: sidebarOpen ? `${DRAWER_WIDTH}px` : 0,
+          transition: 'margin-left 0.3s ease',
           minHeight: '100vh',
         }}
       >
@@ -33,10 +31,10 @@ const MainLayout = ({ children }) => {
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.15 }}
           >
             {children}
           </motion.div>
